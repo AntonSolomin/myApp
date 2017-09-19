@@ -17,4 +17,12 @@ public class ApiUtils {
         }
         return returnDto;
     }
+
+    public static Map<String,  Object> getUsersDto(List<User> users) {
+        Map<String, Object> returnDto = new HashMap<>();
+        for (User user : users) {
+            returnDto.put("user_name", user.getLastName());
+        }
+        return returnDto;
+    }
 }

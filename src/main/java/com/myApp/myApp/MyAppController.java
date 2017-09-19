@@ -24,4 +24,10 @@ public class MyAppController {
         List<Post> posts = postService.findAll();
         return ApiUtils.getPostsDTO(posts);
     }
+
+    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    public Map<String, Object> getUsers() {
+        List<User> users = userService.findAll();
+        return ApiUtils.getUsersDto(users);
+    }
 }
