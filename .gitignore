@@ -22,3 +22,13 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+
+src/*/[Ll]ogs/*
+hs_err_pid2068.log
+hs_err_pid4100.log
+hs_err_pid6856.log
+replay_pid2068.log
+replay_pid4100.log
+replay_pid6856.log
+src/main/resources/templates/

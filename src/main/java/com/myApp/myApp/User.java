@@ -26,6 +26,18 @@ public class User {
         this.password = inputpassword;
     }
 
+    public void addPost(Post post) {
+        posts.add(post);
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
     public long getUserId() {
         return userId;
     }

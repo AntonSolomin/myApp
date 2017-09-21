@@ -12,14 +12,31 @@ public class Post {
     private long id;
     private String postSubject;
     private String postBody;
+    private int postPrice;
     private Date postCreationDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
     private User user;
 
-    public Post() {
+    public Post() {}
+
+
+    public Post(User inputUser, String subject, String body, Integer price) {
+        this.postSubject = subject;
+        this.postBody = body;
+        this.postPrice = price;
+        this.user = inputUser;
+        inputUser.addPost(this);
         postCreationDate = new Date();
+    }
+
+    public int getPostPrice() {
+        return postPrice;
+    }
+
+    public void setPostPrice(int postPrice) {
+        this.postPrice = postPrice;
     }
 
     public User getUser() {
