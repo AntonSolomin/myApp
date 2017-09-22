@@ -1,5 +1,7 @@
 package com.myApp.myApp;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -50,6 +52,7 @@ public class ApiUtils {
         return returnDto;
     }
 
+    @org.jetbrains.annotations.Contract("true -> !null; false -> !null")
     public static ResponseEntity<Object> getUserCreatingResponse(boolean isSaved) {
         if (isSaved) {
             return new ResponseEntity<Object>("player_created", HttpStatus.CREATED);
@@ -58,6 +61,16 @@ public class ApiUtils {
         }
     }
 
+    @Contract("_, true -> !null; _, false -> !null")
+    public static ResponseEntity<Object> getPostCreationResponce(boolean canUserPost) {
+        if (canUserPost) {
+            return new ResponseEntity<Object>("post_created", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<Object>("post_not_created", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Nullable
     public static String currentAuthenticatedUserName (Authentication authentication) {
         if (isGuest(authentication)) {
             return null;
@@ -65,9 +78,15 @@ public class ApiUtils {
         return authentication.getName();
     }
 
+    @Contract(value = "null -> true", pure = true)
     public static boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
-
+    public static boolean isUserAuthenticated (Authentication authentication) {
+        if (isGuest(authentication)) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -1,5 +1,7 @@
 package com.myApp.myApp;
 
+import org.springframework.security.core.Authentication;
+
 import java.util.List;
 
 public interface UserService {
@@ -11,4 +13,5 @@ public interface UserService {
                   String inputLastname,
                   String inputUserName,
                   String password);
+
 }
