@@ -3,10 +3,7 @@ package com.myApp.myApp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -50,15 +47,38 @@ public class MyAppController {
     }
 
     @RequestMapping(path = "/users", method = RequestMethod.POST)
-    public ResponseEntity<Object> signUpPlayer(String firstName,
-                                               String inputLastname,
+    public ResponseEntity<Object> signUpPlayer(String inputFirstName,
+                                               String inputLastName,
                                                String inputUserName,
                                                String password) {
-        boolean isOk = userService.isUserOk(firstName, inputLastname, inputUserName, password);
+        boolean isOk = userService.isUserOk(inputFirstName, inputLastName, inputUserName, password);
         if (isOk){
-            userService.save(new User(firstName, inputLastname, inputUserName, password));
+            userService.save(new User(inputFirstName, inputLastName, inputUserName, password));
         }
         return ApiUtils.getUserCreatingResponse(isOk);
+    }
+
+    @RequestMapping(path = "/users", method = RequestMethod.PATCH)
+    public ResponseEntity<Object> editUser(@RequestBody Map<String, String> inputEditData,
+                                           Authentication authentication){
+
+        final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
+        boolean isEdited = false;
+        if (userName != null && inputEditData != null) {
+            isEdited = userService.editUser(userName, inputEditData);
+        }
+        return ApiUtils.getEditUserResponse(isEdited);
+    }
+
+    @RequestMapping(path = "/posts", method = RequestMethod.PATCH)
+    public ResponseEntity<Object> editPost(@RequestBody Map<String,Object> inputEditData,
+                                           Authentication authentication) {
+        final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
+        boolean isEdited = false;
+        if (userName != null && inputEditData != null) {
+            isEdited = postService.editPost(inputEditData);
+        }
+        return ApiUtils.getEditPostResponse(isEdited);
     }
 
 }

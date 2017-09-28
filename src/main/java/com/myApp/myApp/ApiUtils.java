@@ -61,6 +61,24 @@ public class ApiUtils {
         }
     }
 
+    @Contract("true -> !null; false -> !null")
+    public static ResponseEntity<Object> getEditUserResponse(boolean isEdited) {
+        if (isEdited) {
+            return new ResponseEntity<Object>("user_edited", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>("user_not_edited", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Contract("true -> !null; false -> !null")
+    public static ResponseEntity<Object> getEditPostResponse(boolean isEdited) {
+        if (isEdited) {
+            return new ResponseEntity<Object>("post_edited", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>("post_not_edited", HttpStatus.FORBIDDEN);
+        }
+    }
+
     @Contract("_, true -> !null; _, false -> !null")
     public static ResponseEntity<Object> getPostCreationResponce(boolean canUserPost) {
         if (canUserPost) {
@@ -83,6 +101,7 @@ public class ApiUtils {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
+    @Contract(pure = true)
     public static boolean isUserAuthenticated (Authentication authentication) {
         if (isGuest(authentication)) {
             return false;

@@ -39,9 +39,6 @@ public class MyAppApplication {
 			userService.save(user1);
 			userService.save(user2);
 
-			Post post1 = new Post(user1, "Flying Spaghetti Monster", "This little dude is on sale. It's been bothering me a little", 1000 );
-			postService.save(post1);
-
 			Post post2 = new Post(user2, "Cthulhu", "Ask yourself: 'who doesn't need a Cthulhu?'.Get one for yourself!", 2000);
 			postService.save(post2);
 		};

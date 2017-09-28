@@ -79,9 +79,9 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>1.5.7.RELEASE</version>
-				<configuration>
+				<!--<configuration>
 					<addResources>true</addResources>
-				</configuration>
+				</configuration>-->
 			</plugin>
 		</plugins>
 

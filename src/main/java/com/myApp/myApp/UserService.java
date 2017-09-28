@@ -1,8 +1,7 @@
 package com.myApp.myApp;
 
-import org.springframework.security.core.Authentication;
-
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     User save(User user);
@@ -10,8 +9,10 @@ public interface UserService {
     List<User> findAll();
     User findByUserName(String name);
     boolean isUserOk(String firstName,
-                  String inputLastname,
+                  String inputLastName,
                   String inputUserName,
                   String password);
 
+    boolean editUser(String userName,
+                     Map<String,String> inputEditData);
 }
