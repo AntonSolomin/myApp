@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // this makes the warnings to bbe ignored by intelliJ
 @SuppressWarnings("WeakerAccess")
@@ -19,7 +16,7 @@ public class ApiUtils {
     private ApiUtils() {}
 
     public static Map<String, Object> getPostsDTO(List<Post> posts, String authedUser) {
-        Map<String, Object> returnDto = new HashMap<>();
+        Map<String, Object> dto = new HashMap<>();
         List<Object> postsValue = new ArrayList<>();
         for (Post post : posts) {
             Map<String, Object> newPost = new HashMap<>();
@@ -30,12 +27,13 @@ public class ApiUtils {
             newPost.put("post_price", post.getPostPrice());
             postsValue.add(newPost);
         }
-        returnDto.put("posts", postsValue);
-        returnDto.put("logged_in_user_id", authedUser);
-        return returnDto;
+        dto.put("posts", postsValue);
+        dto.put("logged_in_user_id", authedUser);
+        return dto;
     }
 
-    public static Map<String,  Object> getUsersDto(List<User> users, String authedUser) {
+    public static Map<String,  Object> getUsersDto(List<User> users,
+                                                   String authedUser) {
         Map<String, Object> returnDto = new HashMap<>();
         List<Object> userValue = new ArrayList<>();
         for (User user : users) {
@@ -50,6 +48,35 @@ public class ApiUtils {
         returnDto.put("users", userValue);
         returnDto.put("logged_in_user_id", authedUser);
         return returnDto;
+    }
+
+    public static Map<String,Object> getPostsQuery(List<Post> posts,
+                                                    List<String> query,
+                                                    String user) {
+        Set<Post> postsToSend = new HashSet<>();
+        for (String aQuery : query) {
+            for (Post current : posts) {
+                String postSubject = current.getPostSubject();
+                List<String> items = Arrays.asList(postSubject.trim().split("\\s+"));
+                for (String item : items) {
+                    if (aQuery.toLowerCase().equals(item.toLowerCase())) {
+                        postsToSend.add(current);
+                    }
+                }
+            }
+        }
+
+        Map<String, Object> dto = new HashMap<>();
+        List<Object> postsValue = new ArrayList<>();
+
+        for (Post post : postsToSend) {
+            Map<String, Object> newPost = new HashMap<>();
+            newPost.put("post_id", post.getId());
+            newPost.put("post_subject", post.getPostSubject());
+            postsValue.add(newPost);
+        }
+        dto.put("posts", postsValue);
+        return dto;
     }
 
     @org.jetbrains.annotations.Contract("true -> !null; false -> !null")
@@ -85,6 +112,16 @@ public class ApiUtils {
             return new ResponseEntity<Object>("post_created", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<Object>("post_not_created", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Contract("true -> !null; false -> !null")
+    public static ResponseEntity<Object> getPostJoinResponse (boolean isJoined,
+                                                              Map<String,Object> dto) {
+        if (isJoined) {
+            return new ResponseEntity<Object>(dto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>(dto, HttpStatus.FORBIDDEN);
         }
     }
 

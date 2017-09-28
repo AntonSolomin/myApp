@@ -39,8 +39,12 @@ public class MyAppApplication {
 			userService.save(user1);
 			userService.save(user2);
 
-			Post post2 = new Post(user2, "Cthulhu", "Ask yourself: 'who doesn't need a Cthulhu?'.Get one for yourself!", 2000);
+			Post post2 = new Post(user2, "Cthulhu cheese Potato", "Ask yourself: 'who doesn't need a Cthulhu?'.Get one for yourself!", 2000);
+			Post post3 = new Post(user2, "Beer Potato", "I made this really cool beer. Check it out!", 5);
+			Post post4 = new Post(user2, "Cakes Cheese", "Delicious tasty cakes. Don't miss out on the amazing opportunity!", 20);
 			postService.save(post2);
+			postService.save(post3);
+			postService.save(post4);
 		};
 	}
 
@@ -90,7 +94,9 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.authorizeRequests()
 				.antMatchers("/web/index.html").permitAll()
-				.antMatchers("/web/scripts/script.js").permitAll()
+				.antMatchers("/web/post.html").permitAll()
+				.antMatchers("/web/scripts/index.js").permitAll()
+				.antMatchers("/web/scripts/post.js").permitAll()
 				.antMatchers("/rest/*").denyAll()
 				.anyRequest().fullyAuthenticated();
 
