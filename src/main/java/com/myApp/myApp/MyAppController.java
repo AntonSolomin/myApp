@@ -1,10 +1,12 @@
 package com.myApp.myApp;
 
+import com.sun.net.httpserver.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,26 @@ public class MyAppController {
         List<User> users = userService.findAll();
         return ApiUtils.getUsersDto(users, user);
     }
+
+    @RequestMapping(path = "/users/{userName}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getUserDashboard (Authentication authentication,
+                                                 @PathVariable String queryUserName) {
+        final String authenticationUserName = ApiUtils.currentAuthenticatedUserName(authentication);
+        boolean canViewDashboard = false;
+        if (authenticationUserName != null) {
+            User user = userService.findByUserName(queryUserName);
+            Map <String,Object> successDto = ApiUtils.getUserDashboardDto(user);
+            canViewDashboard = true;
+            return ApiUtils.getUserViewDashboard(canViewDashboard, successDto);
+        } else {
+            Map <String,Object> successDto = new HashMap<>();
+
+            return ApiUtils.getUserViewDashboard(canViewDashboard, new HashMap <String,Object>());
+        }
+
+    }
+
+
 
     @RequestMapping(path = "/posts", method = RequestMethod.POST)
     public ResponseEntity<Object> createPost(Authentication authentication,

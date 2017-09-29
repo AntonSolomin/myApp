@@ -1,12 +1,20 @@
 $(function () {
     logIn();
-
+    searchFormSetUp();
 });
 
+function searchFormSetUp() {
+    $("#submit").click(search);
+    $("#query").keydown(function (event) {
+        if (event.keyCode == 13) {
+            $("#submit").click();
+            return false;
+        }
+    });
+}
 
 function renderPosts(data) {
     console.log(data);
-    $("#submit").click(search);
 
     var output = "";
     for (var i =0; i < data.posts.length; ++i) {
@@ -51,7 +59,9 @@ function editPost() {
 }
 
 function search() {
-    sendApiRequest("/api/posts/queries", "POST", ["cheese", "cakes"], onSearchSuccess, failureCallback);
+    var query = $("#query").val();
+    var queryArray = query.split(" ");
+    sendApiRequest("/api/posts/queries", "POST", queryArray, onSearchSuccess, failureCallback);
 }
 
 function onSearchSuccess (response) {

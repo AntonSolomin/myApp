@@ -32,8 +32,8 @@ public class ApiUtils {
         return dto;
     }
 
-    public static Map<String,  Object> getUsersDto(List<User> users,
-                                                   String authedUser) {
+    public static Map<String, Object> getUsersDto(List<User> users,
+                                                  String authedUser) {
         Map<String, Object> returnDto = new HashMap<>();
         List<Object> userValue = new ArrayList<>();
         for (User user : users) {
@@ -50,9 +50,9 @@ public class ApiUtils {
         return returnDto;
     }
 
-    public static Map<String,Object> getPostsQuery(List<Post> posts,
-                                                    List<String> query,
-                                                    String user) {
+    public static Map<String, Object> getPostsQuery(List<Post> posts,
+                                                   List<String> query,
+                                                   String user) {
         Set<Post> postsToSend = new HashSet<>();
         for (String aQuery : query) {
             for (Post current : posts) {
@@ -65,7 +65,12 @@ public class ApiUtils {
                 }
             }
         }
+        //if no match return all posts
+        if (postsToSend.size() == 0) {
+            return getPostsDTO(posts, user);
+        }
 
+        // if there's a match return the result
         Map<String, Object> dto = new HashMap<>();
         List<Object> postsValue = new ArrayList<>();
 
@@ -73,10 +78,32 @@ public class ApiUtils {
             Map<String, Object> newPost = new HashMap<>();
             newPost.put("post_id", post.getId());
             newPost.put("post_subject", post.getPostSubject());
+            newPost.put("post_subject", post.getPostPrice());
             postsValue.add(newPost);
         }
         dto.put("posts", postsValue);
         return dto;
+    }
+
+    public static Map<String, Object> getUserDashboardDto(User user){
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("first_name",user.getFirstName());
+        dto.put("last_name",user.getLastName());
+        dto.put("user_id",user.getUserId());
+        dto.put("username",user.getUserName());
+        dto.put("posts_quantity",user.getPosts());
+        dto.put("posts", user.getPosts());
+        return dto;
+    }
+
+    @Contract("true -> !null; false -> !null")
+    public static ResponseEntity<Object> getUserViewDashboard(boolean canView,
+                                                              Map<String,Object> dto) {
+        if (canView) {
+            return new ResponseEntity<Object>(dto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>(dto, HttpStatus.FORBIDDEN);
+        }
     }
 
     @org.jetbrains.annotations.Contract("true -> !null; false -> !null")
