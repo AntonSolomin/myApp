@@ -35,7 +35,7 @@ public class MyAppApplication {
 									  PostService postService) {
 		return (args) -> {
 			User user1 = new User("Anton", "Solomin", "ledorub", "123");
-			User user2 = new User("Bruno", "Ortiz", "Bruminator", "qwe");
+			User user2 = new User("Bruno", "Ortiz", "bruminator", "qwe");
 			userService.save(user1);
 			userService.save(user2);
 
@@ -94,9 +94,11 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.authorizeRequests()
 				.antMatchers("/web/index.html").permitAll()
-				.antMatchers("/web/post.html").permitAll()
+				.antMatchers("/web/html/post.html").permitAll()
+				.antMatchers("/web/html/dashboard.html").permitAll()
 				.antMatchers("/web/scripts/index.js").permitAll()
 				.antMatchers("/web/scripts/post.js").permitAll()
+				.antMatchers("/web/scripts/dashboard.js").permitAll()
 				.antMatchers("/rest/*").denyAll()
 				.anyRequest().fullyAuthenticated();
 

@@ -1,6 +1,6 @@
 $(function () {
-    logIn();
-    searchFormSetUp();
+    /*logIn();
+    searchFormSetUp();*/
 });
 
 function searchFormSetUp() {
@@ -15,6 +15,7 @@ function searchFormSetUp() {
 
 function renderPosts(data) {
     console.log(data);
+    var userDashBoardLink = "Hello " + "<a href='/web/html/dashboard.html'>" + data.logged_in_user_id + "</a>";
 
     var output = "";
     for (var i =0; i < data.posts.length; ++i) {
@@ -28,6 +29,7 @@ function renderPosts(data) {
         output += "</p>";
     }
     $("#output").html(output);
+    $("#userName").html(userDashBoardLink);
 }
 
 function addIdToLink(user, post) {
@@ -38,8 +40,11 @@ function addIdToLink(user, post) {
 }
 
 function logIn () {
-    $.post("/api/login", { userName: "ledorub", password: "123" }).done(todo);
+    $.post("/api/login", { userName: "bruminator", password: "qwe" }).done(todo);
+}
 
+function logOut() {
+    $.post("/api/logout").done(function () {console.log("logged out");});
 }
 
 function todo() {

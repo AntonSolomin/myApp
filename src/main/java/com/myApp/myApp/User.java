@@ -26,8 +26,6 @@ public class User {
         this.password = inputpassword;
     }
 
-
-
     public void addPost(Post post) {
         posts.add(post);
     }

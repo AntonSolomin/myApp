@@ -3,12 +3,34 @@
  */
 
 $(function () {
-    logIn();
-    searchFormSetUp();
+    $("#logIn").click(logIn);
+    $("#getUser").click(seeUser);
 });
 
 function logIn () {
-    $.post("/api/login", { userName: "ledorub", password: "123" }).done(todo);
+    $.post("/api/login", { userName: "bruminator", password: "qwe" }).done(function(data){console.log(data);});
+}
+
+function seeUser() {
+    $.getJSON("/api/users/bruminator", renderUser).fail(function () {console.log("failed to get");});
+}
+
+function renderUser(data) {
+    var userName = data.username + " dashboard";
+    $("#userNameTitle").html(userName);
+
+    var output;
+    output += "<p>" + data.first_name + "</p>";
+    output += "<p>" + data.last_name + "</p>";
+    output += "<p>" + data.user_id + "</p>";
+    output += "<p>" + data.username + "</p>";
+    output += "<p>" + "Your posts are: " + data.posts + " posts." +"</p>";
+
+    //output += "<p>" + "You have " + data.posts.length + " posts." +"</p>";
+
+
+    $("#content").html(output);
+    console.log(data);
 }
 
 function editUser () {

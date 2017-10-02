@@ -1,6 +1,5 @@
 package com.myApp.myApp;
 
-import com.sun.net.httpserver.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,7 +18,7 @@ public class MyAppController {
 
     @Autowired
     UserService userService;
-    //test
+
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
     public Map<String, Object> getPosts(Authentication authentication) {
         final String user = ApiUtils.currentAuthenticatedUserName(authentication);
@@ -42,22 +41,20 @@ public class MyAppController {
         return ApiUtils.getUsersDto(users, user);
     }
 
-    @RequestMapping(path = "/users/{userName}", method = RequestMethod.GET)
+    //TODO complete the user dashboard
+    @RequestMapping(path = "/users/{queryUserName}", method = RequestMethod.GET)
     public ResponseEntity<Object> getUserDashboard (Authentication authentication,
                                                  @PathVariable String queryUserName) {
-        final String authenticationUserName = ApiUtils.currentAuthenticatedUserName(authentication);
+        final String authenticatedUserName = ApiUtils.currentAuthenticatedUserName(authentication);
         boolean canViewDashboard = false;
-        if (authenticationUserName != null) {
+        if (authenticatedUserName != null) {
             User user = userService.findByUserName(queryUserName);
-            Map <String,Object> successDto = ApiUtils.getUserDashboardDto(user);
             canViewDashboard = true;
-            return ApiUtils.getUserViewDashboard(canViewDashboard, successDto);
+            Map<String, Object> dto = ApiUtils.getUserDashboardDto(user);
+            return ApiUtils.getUserViewDashboard(canViewDashboard, dto);
         } else {
-            Map <String,Object> successDto = new HashMap<>();
-
             return ApiUtils.getUserViewDashboard(canViewDashboard, new HashMap <String,Object>());
         }
-
     }
 
 
@@ -69,7 +66,6 @@ public class MyAppController {
                                              int postPrice) {
 
         boolean canUserPost = ApiUtils.isUserAuthenticated(authentication);
-
         if(canUserPost){
             User user = userService.findByUserName(ApiUtils.currentAuthenticatedUserName(authentication));
             postService.save(new Post(user, postSubject, postBody, postPrice));
@@ -118,6 +114,8 @@ public class MyAppController {
         final Map<String,Object> dto = new LinkedHashMap<>();
         final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
 
+
+        //TODO put it in the ApiUtis
         Post post = postService.findOne(postId);
         boolean isJoined = false;
         if (userName != null && postId != null) {

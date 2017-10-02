@@ -91,10 +91,27 @@ public class ApiUtils {
         dto.put("last_name",user.getLastName());
         dto.put("user_id",user.getUserId());
         dto.put("username",user.getUserName());
-        dto.put("posts_quantity",user.getPosts());
-        dto.put("posts", user.getPosts());
+        dto.put("posts", getUserDashBoardPosts(user.getPosts()));
         return dto;
     }
+
+    public static Map<String,Object> getUserDashBoardPosts(Set<Post> posts) {
+        Map<String, Object> dashboardPosts = new HashMap<>();
+        List<Object> postsValue = new ArrayList<>();
+        for (Post post : posts) {
+            Map<String, Object> newPost = new HashMap<>();
+            newPost.put("post_id", post.getId());
+            newPost.put("post_creation_date", post.getPostCreationDate());
+            newPost.put("post_subject", post.getPostSubject());
+            newPost.put("post_body", post.getPostBody());
+            newPost.put("post_price", post.getPostPrice());
+            postsValue.add(newPost);
+        }
+        dashboardPosts.put("posts", postsValue);
+        return dashboardPosts;
+    }
+
+
 
     @Contract("true -> !null; false -> !null")
     public static ResponseEntity<Object> getUserViewDashboard(boolean canView,
