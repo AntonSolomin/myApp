@@ -21,7 +21,6 @@ public class Post {
 
     public Post() {}
 
-
     public Post(User inputUser, String subject, String body, int price) {
         this.postSubject = subject;
         this.postBody = body;

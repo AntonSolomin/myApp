@@ -32,6 +32,17 @@ public class ApiUtils {
         return dto;
     }
 
+    public static Map<String,Object> getSinglePostDTO (Post post, String authedUser, Long postId){
+        Map<String,Object> dto = new HashMap<>();
+        if (authedUser != null && postId != null) {
+            dto.put("post_id", post.getId());
+            dto.put("post_subject", post.getPostSubject());
+            dto.put("post_body", post.getPostBody());
+            dto.put("post_price", post.getPostPrice());
+        }
+        return dto;
+    }
+
     public static Map<String, Object> getUsersDto(List<User> users,
                                                   String authedUser) {
         Map<String, Object> returnDto = new HashMap<>();
@@ -83,6 +94,35 @@ public class ApiUtils {
         }
         dto.put("posts", postsValue);
         return dto;
+    }
+
+    public static boolean canUserDelete(User userName, Post inputPost) {
+        boolean hasPost = false;
+        //TODO write stuff here
+        for (Post userPost : userName.getPosts()) {
+            if (userPost.getId() == inputPost.getId()) {
+                hasPost = true;
+            }
+        }
+        return hasPost;
+    }
+
+    @Contract("_, true -> !null; _, false -> !null")
+    public static ResponseEntity<Object> getDeletePostResponce(boolean canUserDelete) {
+        if (canUserDelete) {
+            return new ResponseEntity<Object>("post_deleted", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>("post_not_deleted", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Contract("_, true -> !null; _, false -> !null")
+    public static ResponseEntity<Object> getDeleteUserResponce(boolean canUserDelete) {
+        if (canUserDelete) {
+            return new ResponseEntity<Object>("user_deleted", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>("user_not_deleted", HttpStatus.FORBIDDEN);
+        }
     }
 
     public static Map<String, Object> getUserDashboardDto(User user){

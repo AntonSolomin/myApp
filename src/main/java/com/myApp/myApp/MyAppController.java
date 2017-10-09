@@ -1,12 +1,12 @@
 package com.myApp.myApp;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +26,57 @@ public class MyAppController {
         return ApiUtils.getPostsDTO(posts, user);
     }
 
+    @RequestMapping(path = "/posts", method = RequestMethod.POST)
+    public ResponseEntity<Object> createPost(Authentication authentication,
+                                             String postBody,
+                                             String postSubject,
+                                             int postPrice) {
+
+        boolean canUserPost = ApiUtils.isUserAuthenticated(authentication);
+        if(canUserPost){
+            User user = userService.findByUserName(ApiUtils.currentAuthenticatedUserName(authentication));
+            postService.save(new Post(user, postSubject, postBody, postPrice));
+        }
+        return  ApiUtils.getPostCreationResponce(canUserPost);
+    }
+
+    //TODO delete user
+    @RequestMapping(path = "/posts", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deletePost(@RequestBody Long postId,
+                                             Authentication authentication) {
+        final User user = userService.findByUserName(ApiUtils.currentAuthenticatedUserName(authentication));
+        boolean canDelete = false;
+        if (postId != null && user != null) {
+            Post post = postService.findOne(postId);
+            canDelete = ApiUtils.canUserDelete(user, post);
+            if (canDelete) postService.delete(post);
+        }
+        return ApiUtils.getDeletePostResponce(canDelete);
+    }
+
+    @RequestMapping(path = "/posts", method = RequestMethod.PATCH)
+    public ResponseEntity<Object> editPost(@RequestBody EditPostReceiver inputEditData,
+                                           Authentication authentication) {
+        final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
+        boolean isEdited = false;
+        if (userName != null && inputEditData != null) {
+            isEdited = postService.editPost(inputEditData);
+        }
+        return ApiUtils.getEditPostResponse(isEdited);
+    }
+
+    @RequestMapping(path = "/post_view/{postId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getPostView(@PathVariable Long postId,
+                                              Authentication authentication) {
+
+        final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
+        Post post = postService.findOne(postId);
+        boolean isJoined = false;
+        final Map<String,Object> dto = ApiUtils.getSinglePostDTO(post, userName, postId);
+        if (dto.size() != 0) isJoined = true;
+        return ApiUtils.getPostJoinResponse(isJoined, dto);
+    }
+
     @RequestMapping(path = "/posts/queries", method = RequestMethod.POST)
     public Map<String, Object> searchPosts(Authentication authentication,
                                            @RequestBody List<String> query) {
@@ -41,38 +92,6 @@ public class MyAppController {
         return ApiUtils.getUsersDto(users, user);
     }
 
-    //TODO complete the user dashboard
-    @RequestMapping(path = "/users/{queryUserName}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getUserDashboard (Authentication authentication,
-                                                 @PathVariable String queryUserName) {
-        final String authenticatedUserName = ApiUtils.currentAuthenticatedUserName(authentication);
-        boolean canViewDashboard = false;
-        if (authenticatedUserName != null) {
-            User user = userService.findByUserName(queryUserName);
-            canViewDashboard = true;
-            Map<String, Object> dto = ApiUtils.getUserDashboardDto(user);
-            return ApiUtils.getUserViewDashboard(canViewDashboard, dto);
-        } else {
-            return ApiUtils.getUserViewDashboard(canViewDashboard, new HashMap <String,Object>());
-        }
-    }
-
-
-
-    @RequestMapping(path = "/posts", method = RequestMethod.POST)
-    public ResponseEntity<Object> createPost(Authentication authentication,
-                                             String postBody,
-                                             String postSubject,
-                                             int postPrice) {
-
-        boolean canUserPost = ApiUtils.isUserAuthenticated(authentication);
-        if(canUserPost){
-            User user = userService.findByUserName(ApiUtils.currentAuthenticatedUserName(authentication));
-            postService.save(new Post(user, postSubject, postBody, postPrice));
-        }
-        return  ApiUtils.getPostCreationResponce(canUserPost);
-    }
-
     @RequestMapping(path = "/users", method = RequestMethod.POST)
     public ResponseEntity<Object> createUser(String inputFirstName,
                                              String inputLastName,
@@ -85,15 +104,18 @@ public class MyAppController {
         return ApiUtils.getUserCreatingResponse(isOk);
     }
 
-    @RequestMapping(path = "/posts", method = RequestMethod.PATCH)
-    public ResponseEntity<Object> editPost(@RequestBody EditPostReceiver inputEditData,
-                                           Authentication authentication) {
-        final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
-        boolean isEdited = false;
-        if (userName != null && inputEditData != null) {
-            isEdited = postService.editPost(inputEditData);
+
+    //TODO Ask Ignasi why this could be not working
+    @RequestMapping(path = "/users", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> deleteUser(Authentication authentication) {
+
+        final User user = userService.findByUserName(ApiUtils.currentAuthenticatedUserName(authentication));
+        boolean canDelete = false;
+        if (user != null) {
+            canDelete = true;
+            if (canDelete) userService.delete(user);
         }
-        return ApiUtils.getEditPostResponse(isEdited);
+        return ApiUtils.getDeleteUserResponce(canDelete);
     }
 
     @RequestMapping(path = "/users", method = RequestMethod.PATCH)
@@ -108,23 +130,22 @@ public class MyAppController {
         return ApiUtils.getEditUserResponse(isEdited);
     }
 
-    @RequestMapping(path = "/post_view/{postId}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getPostView(@PathVariable Long postId,
-                                              Authentication authentication) {
-        final Map<String,Object> dto = new LinkedHashMap<>();
-        final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
-
-
-        //TODO put it in the ApiUtis
-        Post post = postService.findOne(postId);
-        boolean isJoined = false;
-        if (userName != null && postId != null) {
-            dto.put("post_id", post.getId());
-            dto.put("post_subject", post.getPostSubject());
-            dto.put("post_body", post.getPostBody());
-            dto.put("post_price", post.getPostPrice());
-            isJoined = true;
+    @RequestMapping(path = "/users/{queryUserName}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getUserDashboard (Authentication authentication,
+                                                 @PathVariable String queryUserName) {
+        final String authenticatedUserName = ApiUtils.currentAuthenticatedUserName(authentication);
+        boolean canViewDashboard = false;
+        if (authenticatedUserName != null) {
+            User user = userService.findByUserName(queryUserName);
+            canViewDashboard = true;
+            Map<String, Object> dto = ApiUtils.getUserDashboardDto(user);
+            return ApiUtils.getUserViewDashboard(canViewDashboard, dto);
+        } else {
+            return ApiUtils.getUserViewDashboard(canViewDashboard, new HashMap <String,Object>());
         }
-        return ApiUtils.getPostJoinResponse(isJoined, dto);
     }
 }
+
+
+
+

@@ -5,6 +5,7 @@ import java.util.Map;
 
 public interface UserService {
     User save(User user);
+    void delete(User user);
     User findOne(long id);
     List<User> findAll();
     User findByUserName(String name);

@@ -1,6 +1,5 @@
 $(function () {
-    /*logIn();
-    searchFormSetUp();*/
+    todo();
 });
 
 function searchFormSetUp() {
@@ -49,6 +48,7 @@ function logOut() {
 
 function todo() {
     $.getJSON("/api/posts", renderPosts).fail(function () {console.log("failed to get /api/posts");});
+    console.log("Hurray!");
 }
 
 function editUser () {
@@ -102,10 +102,25 @@ function sendApiRequest(url, method, data, successCallback, failureCallback) {
     }
 }
 
-function successCallback () {
-    console.log("Hurray!");
+function deletePost () {
+    var queryArray = "1";
+    sendApiRequest('/api/posts/', "DELETE", queryArray, successCallback, failureCallback);
 }
 
-function failureCallback () {
+function deleteUser () {
+    $.ajax({
+        type : "DELETE",
+        url : "/api/users/",
+        success: successCallback,
+        error: failureCallback
+    });
+}
+
+function successCallback (data) {
+    todo();
+}
+
+function failureCallback (data) {
+    console.log(data);
     console.log("Snap!");
 }

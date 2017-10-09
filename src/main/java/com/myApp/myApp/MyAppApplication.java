@@ -39,12 +39,12 @@ public class MyAppApplication {
 			userService.save(user1);
 			userService.save(user2);
 
-			Post post2 = new Post(user2, "Cthulhu cheese Potato", "Ask yourself: 'who doesn't need a Cthulhu?'.Get one for yourself!", 2000);
-			Post post3 = new Post(user2, "Beer Potato", "I made this really cool beer. Check it out!", 5);
-			Post post4 = new Post(user2, "Cakes Cheese", "Delicious tasty cakes. Don't miss out on the amazing opportunity!", 20);
+			Post post1 = new Post(user2, "Cthulhu cheese Potato", "Ask yourself: 'who doesn't need a Cthulhu?'.Get one for yourself!", 2000);
+			Post post2 = new Post(user1, "Beer Potato", "I made this really cool beer. Check it out!", 5);
+			Post post3 = new Post(user1, "Cakes Cheese", "Delicious tasty cakes. Don't miss out on the amazing opportunity!", 20);
+			postService.save(post1);
 			postService.save(post2);
 			postService.save(post3);
-			postService.save(post4);
 		};
 	}
 

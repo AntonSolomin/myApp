@@ -16,6 +16,11 @@ public class PostServiceImplementation implements PostService {
     }
 
     @Override
+    public void delete(Post post) {
+        postRepository.removeByPostId(post.getId());
+    }
+
+    @Override
     public Post findOne(long id) {
         return postRepository.findOne(id);
     }
