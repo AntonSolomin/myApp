@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="www.thymeleaf.org " xmlns:sec="www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Index</title>
     <script
 			  src="https://code.jquery.com/jquery-3.2.1.js"
 			  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
@@ -11,6 +13,22 @@
 
 </head>
 <body>
+<br /><br />
+<h1>Spring Boot file upload example</h1>
+<form method="POST" action="/api/upload" enctype="multipart/form-data">
+    <input type="file" name="file" /><br/><br/>
+    <input type="submit" value="Submit" />
+</form>
+<div th:if="${message}">
+    <h2 th:text="${message}"/><br/><br/>
+</div>
+<div th:if="${imageurl} != null">
+    <img th:src="${imageurl}" />
+    <hr />
+</div>
+
+
+
 <p id="userName"></p>
     <div id="output"></div>
     <button onclick="logIn()">Log In</button>
@@ -19,6 +37,16 @@
     <button onclick="editPost()">Change Post</button>
     <button onclick="deletePost()">Delete Post</button>
     <button onclick="deleteUser()">Delete User</button>
+    <button onclick="postPicture()">Post Picture</button>
+
+    <form id="upload-file-form">
+        <label for="upload-file-input">Upload your file:</label>
+        <input id="upload-file-input" type="file" name="uploadfile" accept="*" />
+        <br />
+        <span id="upload-file-message"></span>
+    </form>
+
+
     <form id="searchBox">
         <div class="form-group">
             <label for="query">Lookig for </label>

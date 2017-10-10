@@ -1,13 +1,30 @@
 package com.myApp.myApp;
 
 
+import com.cloudinary.utils.ObjectUtils;
+import org.cloudinary.json.JSONArray;
+import org.cloudinary.json.JSONObject;
+import org.omg.CORBA.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+
+import com.cloudinary.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.File;
 import java.util.Map;
 
 @RestController
@@ -18,6 +35,39 @@ public class MyAppController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    CloudinaryConfig cloudc;
+
+    @GetMapping("/upload")
+    public String uploadForm(){
+        return "upload";
+    }
+
+    @PostMapping("/upload")
+    //@RequestMapping(path = "/upload", method = RequestMethod.POST)
+    public String singleImageUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes){
+        ModelMap model = new ModelMap();
+        if (file.isEmpty()){
+            model.addAttribute("message","Please select a file to upload");
+            return "upload";
+        }
+        try {
+            Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                    "cloud_name", "dq4elvg0g",
+                    "api_key", "EEgAQDFCI0i-Fe86KvrgsQlBvBI",
+                    "api_secret", "535928336455433"));
+            //Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+            Map uploadResult = cloudinary.uploader().upload("http://cdn1-www.dogtime.com/assets/uploads/gallery/border-collie-dog-breed-pictures/1-facethreequarters.jpg", ObjectUtils.emptyMap());
+            //Map uploadResult = cloudc.upload(file.getBytes(), ObjectUtils.asMap("resourcetype", "auto"));
+            //model.addAttribute("message", "You successfully uploaded '" + file.getOriginalFilename() + "'");
+            //model.addAttribute("imageurl", uploadResult.get("url"));
+        } catch (IOException e){
+            e.printStackTrace();
+            model.addAttribute("message", "Sorry I can't upload that!");
+        }
+        return "upload";
+    }
 
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
     public Map<String, Object> getPosts(Authentication authentication) {

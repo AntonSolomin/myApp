@@ -1,9 +1,12 @@
 package com.myApp.myApp;
 
+import javafx.application.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,11 +28,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @SpringBootApplication
-public class MyAppApplication {
+public class MyAppApplication extends SpringBootServletInitializer {
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder app) {
+		return app.sources(Application.class);
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(MyAppApplication.class, args);
 	}
+
+
 	@Bean
 	public CommandLineRunner initData(UserService userService,
 									  PostService postService) {

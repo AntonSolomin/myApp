@@ -116,6 +116,9 @@ function deleteUser () {
     });
 }
 
+function postPicture() {}
+
+
 function successCallback (data) {
     todo();
 }
