@@ -48,17 +48,24 @@ public class MyAppController {
     //@RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String singleImageUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes){
         ModelMap model = new ModelMap();
+        Cloudinary c = new Cloudinary("cloudinary://535928336455433:EEgAQDFCI0i-Fe86KvrgsQlBvBI@dq4elvg0g");
         if (file.isEmpty()){
             model.addAttribute("message","Please select a file to upload");
             return "upload";
         }
         try {
-            Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            File f=Files.createTempFile("temp", file.getOriginalFilename()).toFile();
+            file.transferTo(f);
+
+            Map response=c.uploader().upload(f, ObjectUtils.emptyMap());
+            return "Ok";
+
+            /*Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
                     "cloud_name", "dq4elvg0g",
                     "api_key", "EEgAQDFCI0i-Fe86KvrgsQlBvBI",
-                    "api_secret", "535928336455433"));
+                    "api_secret", "535928336455433"));*/
             //Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
-            Map uploadResult = cloudinary.uploader().upload("http://cdn1-www.dogtime.com/assets/uploads/gallery/border-collie-dog-breed-pictures/1-facethreequarters.jpg", ObjectUtils.emptyMap());
+            //Map uploadResult = cloudinary.uploader().upload("http://cdn1-www.dogtime.com/assets/uploads/gallery/border-collie-dog-breed-pictures/1-facethreequarters.jpg", ObjectUtils.emptyMap());
             //Map uploadResult = cloudc.upload(file.getBytes(), ObjectUtils.asMap("resourcetype", "auto"));
             //model.addAttribute("message", "You successfully uploaded '" + file.getOriginalFilename() + "'");
             //model.addAttribute("imageurl", uploadResult.get("url"));
