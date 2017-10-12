@@ -1,8 +1,5 @@
 $(function () {
     todo();
-});
-
-function searchFormSetUp() {
     $("#submit").click(search);
     $("#query").keydown(function (event) {
         if (event.keyCode == 13) {
@@ -10,7 +7,7 @@ function searchFormSetUp() {
             return false;
         }
     });
-}
+});
 
 function renderPosts(data) {
     console.log(data);
@@ -43,24 +40,19 @@ function logIn () {
 }
 
 function logOut() {
+    $.post("/api/logout").done(function () {
+        $.getJSON("/api/games", onDataReady);
+        location.reload();
+    });
+}
+
+function logOut() {
     $.post("/api/logout").done(function () {console.log("logged out");});
 }
 
 function todo() {
     $.getJSON("/api/posts", renderPosts).fail(function () {console.log("failed to get /api/posts");});
     console.log("Hurray!");
-}
-
-function editUser () {
-    var url = "/api/users";
-    var data = {inputFirstName: "Blob", inputLastName: "Slob", inputPassword: "567" };
-    sendApiRequest(url, "PATCH", data, successCallback, failureCallback);
-}
-
-function editPost() {
-    var url = "/api/posts";
-    var data = {id: 1, postBody: "Totally new", postSubject: "the subject is fantastically awesome", postPrice: 1000 };
-    sendApiRequest(url, "PATCH", data, successCallback, failureCallback);
 }
 
 function search() {
@@ -71,14 +63,6 @@ function search() {
 
 function onSearchSuccess (response) {
     renderPosts(JSON.parse(response.responseText));
-}
-
-function seePost() {
-    $.getJSON("/api/post_view/1", renderPosts).fail(function () {console.log("Not Good");});
-}
-
-function goToPost() {
-    $.getJSON("/api/post_view/1", renderPosts)
 }
 
 function sendApiRequest(url, method, data, successCallback, failureCallback) {
@@ -101,23 +85,6 @@ function sendApiRequest(url, method, data, successCallback, failureCallback) {
         request.send();
     }
 }
-
-function deletePost () {
-    var queryArray = "1";
-    sendApiRequest('/api/posts/', "DELETE", queryArray, successCallback, failureCallback);
-}
-
-function deleteUser () {
-    $.ajax({
-        type : "DELETE",
-        url : "/api/users/",
-        success: successCallback,
-        error: failureCallback
-    });
-}
-
-function postPicture() {}
-
 
 function successCallback (data) {
     todo();

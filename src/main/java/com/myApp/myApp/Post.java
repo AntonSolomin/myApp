@@ -1,9 +1,7 @@
 package com.myApp.myApp;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Post {
@@ -14,6 +12,7 @@ public class Post {
     private String postBody;
     private int postPrice;
     private Date postCreationDate;
+    String postPicUrl;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
@@ -21,13 +20,22 @@ public class Post {
 
     public Post() {}
 
-    public Post(User inputUser, String subject, String body, int price) {
+    public Post(User inputUser, String subject, String body, int price, String url) {
         this.postSubject = subject;
         this.postBody = body;
         this.postPrice = price;
         this.user = inputUser;
+        this.postPicUrl = url;
         inputUser.addPost(this);
         postCreationDate = new Date();
+    }
+
+    public String getPostPicUrl() {
+        return postPicUrl;
+    }
+
+    public void setPostPicUrl(String postPicUrl) {
+        this.postPicUrl = postPicUrl;
     }
 
     public int getPostPrice() {

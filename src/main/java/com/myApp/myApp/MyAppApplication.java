@@ -9,6 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +21,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -40,6 +43,8 @@ public class MyAppApplication extends SpringBootServletInitializer {
 	}
 
 
+
+
 	@Bean
 	public CommandLineRunner initData(UserService userService,
 									  PostService postService) {
@@ -49,14 +54,16 @@ public class MyAppApplication extends SpringBootServletInitializer {
 			userService.save(user1);
 			userService.save(user2);
 
-			Post post1 = new Post(user2, "Cthulhu cheese Potato", "Ask yourself: 'who doesn't need a Cthulhu?'.Get one for yourself!", 2000);
-			Post post2 = new Post(user1, "Beer Potato", "I made this really cool beer. Check it out!", 5);
-			Post post3 = new Post(user1, "Cakes Cheese", "Delicious tasty cakes. Don't miss out on the amazing opportunity!", 20);
+			Post post1 = new Post(user2, "Cthulhu cheese Potato", "Ask yourself: 'who doesn't need a Cthulhu?'.Get one for yourself!", 2000, "");
+			Post post2 = new Post(user1, "Beer Potato", "I made this really cool beer. Check it out!", 5, "");
+			Post post3 = new Post(user1, "Cakes Cheese", "Delicious tasty cakes. Don't miss out on the amazing opportunity!", 20, "");
 			postService.save(post1);
 			postService.save(post2);
 			postService.save(post3);
 		};
 	}
+
+
 
 }
 

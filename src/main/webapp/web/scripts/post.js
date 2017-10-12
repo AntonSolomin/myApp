@@ -29,6 +29,8 @@ function renderPost(data) {
         output += "<p>" + "Post body: " + data.post_body + "</p>";
         output += "<p>" + "Post price: " + data.post_price + "</p>";
 
+        output += "<img src=" + data.url + " alt='some text'>";
+
     $("#content").html(output);
 }
 

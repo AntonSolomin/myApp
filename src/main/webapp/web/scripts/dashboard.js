@@ -67,3 +67,29 @@ function successCallback () {
 function failureCallback () {
     console.log("Snap!");
 }
+
+function editUser () {
+    var url = "/api/users";
+    var data = {inputFirstName: "Blob", inputLastName: "Slob", inputPassword: "567" };
+    sendApiRequest(url, "PATCH", data, successCallback, failureCallback);
+}
+
+function editPost() {
+    var url = "/api/posts";
+    var data = {id: 1, postBody: "Totally new", postSubject: "the subject is fantastically awesome", postPrice: 1000 };
+    sendApiRequest(url, "PATCH", data, successCallback, failureCallback);
+}
+
+function deletePost () {
+    var queryArray = "1";
+    sendApiRequest('/api/posts/', "DELETE", queryArray, successCallback, failureCallback);
+}
+
+function deleteUser () {
+    $.ajax({
+        type : "DELETE",
+        url : "/api/users/",
+        success: successCallback,
+        error: failureCallback
+    });
+}

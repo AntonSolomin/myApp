@@ -9,7 +9,29 @@
 </head>
 <body>
 <p>New Post</p>
-<form id="newPost">
+<a href='/web/index.html'>Back to main</a>
+
+
+<!--<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+    <input type="file" name="file"/><br/><br/>
+    <input type="submit" value="Submit" id="btnSubmit"/>
+</form>
+<h1>Ajax Post Result</h1>
+<span id="result"></span>-->
+
+<h1>Spring Boot file upload example</h1>
+<!--
+method="POST" action="/api/upload" enctype="multipart/form-data"
+-->
+<form  id="fileUploadForm">
+    <input type="text"  name="subject" id="subject"/><br/><br/>
+    <input type="text"  name="body" id="body"/><br/><br/>
+    <input type="text"  name="price" id="price"/><br/><br/>
+    <input type="file" name="file" /><br/><br/>
+    <input type="submit" value="Submit" id="btnSubmit"/>
+</form>
+
+<!--<form id="newPost">
     <div class="form-group">
         <label for="postSubject">What are you selling?</label>
         <input type="text" class="form-control" id="postSubject" required>
@@ -19,11 +41,19 @@
         <input type="text" class="form-control" id="postBody" required>
     </div>
     <div class="form-group">
-        <label for="postPrice">For how much?</label>
+        <label for="postPrice">Price?</label>
         <input type="text" class="form-control" id="postPrice" required>
     </div>
-    <button id="submitPost" type="button" class="btn btn-primary btn-login-form">Create Post</button>
-</form>
+    <div>
+        <p>Upload a picture of your item</p>
+        <input id="fileinput" type="file" name="file" /><br/><br/>
+    </div>
+    <button id="btnLoad" type="button" value="load" class="btn btn-primary btn-login-form">Create Post</button>
+    <div id="editor"></div>
+</form>-->
+
+
+
 
 <script src="/web/scripts/new.js" type="text/javascript"></script>
 </body>

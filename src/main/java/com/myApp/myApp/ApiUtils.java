@@ -1,5 +1,8 @@
 package com.myApp.myApp;
 
+import org.cloudinary.json.JSONArray;
+import org.cloudinary.json.JSONException;
+import org.cloudinary.json.JSONObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,51 @@ import java.util.*;
 public class ApiUtils {
     // Private constructor to avoid instantiation of the class
     private ApiUtils() {}
+
+    public static Map<String,Object> jsonToMap (JSONObject json) throws JSONException{
+        Map<String, Object> retMap = new HashMap<String, Object>();
+        if(json != JSONObject.NULL) {
+            retMap = toMap(json);
+        }
+        return retMap;
+    }
+
+    public static Map<String, Object> toMap(JSONObject object) throws JSONException {
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        Iterator<String> keysItr = object.keys();
+        while(keysItr.hasNext()) {
+            String key = keysItr.next();
+            Object value = object.get(key);
+
+            if(value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            }
+
+            else if(value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }
+            map.put(key, value);
+        }
+        return map;
+    }
+
+    public static List<Object> toList(JSONArray array) throws JSONException {
+        List<Object> list = new ArrayList<Object>();
+        for(int i = 0; i < array.length(); i++) {
+            Object value = array.get(i);
+            if(value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            }
+
+            else if(value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }
+            list.add(value);
+        }
+        return list;
+    }
+
 
     public static Map<String, Object> getPostsDTO(List<Post> posts, String authedUser) {
         Map<String, Object> dto = new HashMap<>();
@@ -39,6 +87,7 @@ public class ApiUtils {
             dto.put("post_subject", post.getPostSubject());
             dto.put("post_body", post.getPostBody());
             dto.put("post_price", post.getPostPrice());
+            dto.put("url", post.getPostPicUrl());
         }
         return dto;
     }
