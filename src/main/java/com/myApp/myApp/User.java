@@ -1,7 +1,9 @@
 package com.myApp.myApp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,7 +17,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy="user", fetch=FetchType.EAGER)
-    private Set<Post> posts = new HashSet<>();
+    private List<Post> posts = new ArrayList<>();
 
     public User(){}
 
@@ -30,11 +32,11 @@ public class User {
         posts.add(post);
     }
 
-    public Set<Post> getPosts() {
+    public List<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(Set<Post> posts) {
+    public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
 

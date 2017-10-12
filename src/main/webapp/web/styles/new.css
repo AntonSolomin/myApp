@@ -1,0 +1,15 @@
+.inputAreas{
+    border:2px dashed #d2d2d2;
+    position:relative;
+    min-height:150px;
+    min-width:250px;
+    width: 100%;
+    max-width:1000px;
+    margin:auto;
+    display:flex;
+    padding:0;
+    flex-direction:column;
+    text-align:center;
+    background-color:#fff;
+    color:#3AA0FF
+}

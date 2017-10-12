@@ -37,54 +37,17 @@ public class MyAppController {
     @Autowired
     UserService userService;
 
-    //not necessary
+    /*//not necessary
     @GetMapping("/upload")
     public String uploadForm(){
         return "upload";
-    }
+    }*/
 
     //TODO refactor http responses and put them to ApiUtils
-    //TODO create picture entity
     //TODO limit number of pictures that can be added and their size
-    //TODO save the url in your db
-    //TODO add pictures on createPost
     //TODO add ability to ad pics later
-    //TODO send postPicturesUrls along with the post
-
-    @PostMapping("/upload")
-    //@RequestMapping(path = "/upload", method = RequestMethod.POST)
-    public String singleImageUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
-                                    @RequestParam("subject")String subject,
-                                    @RequestParam("body")String body,
-                                    @RequestParam("price")String price){
-        ModelMap model = new ModelMap();
-        Cloudinary c = new Cloudinary("cloudinary://535928336455433:EEgAQDFCI0i-Fe86KvrgsQlBvBI@dq4elvg0g");
-        if (file.isEmpty()){
-            model.addAttribute("message","Please select a file to upload");
-            return "upload";
-        }
-        try {
-            File f=Files.createTempFile("temp", file.getOriginalFilename()).toFile();
-            file.transferTo(f);
-            Map response=c.uploader().upload(f, ObjectUtils.emptyMap());
-
-            return "Ok";
-
-            /*Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-                    "cloud_name", "dq4elvg0g",
-                    "api_key", "EEgAQDFCI0i-Fe86KvrgsQlBvBI",
-                    "api_secret", "535928336455433"));*/
-            //Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
-            //Map uploadResult = cloudinary.uploader().upload("http://cdn1-www.dogtime.com/assets/uploads/gallery/border-collie-dog-breed-pictures/1-facethreequarters.jpg", ObjectUtils.emptyMap());
-            //Map uploadResult = cloudc.upload(file.getBytes(), ObjectUtils.asMap("resourcetype", "auto"));
-            //model.addAttribute("message", "You successfully uploaded '" + file.getOriginalFilename() + "'");
-            //model.addAttribute("imageurl", uploadResult.get("url"));
-        } catch (IOException e){
-            e.printStackTrace();
-            model.addAttribute("message", "Sorry I can't upload that!");
-        }
-        return "upload";
-    }
+    //TODO upload multiple files
+    //TODO create pics thumbnails
 
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
     public Map<String, Object> getPosts(Authentication authentication) {
@@ -93,6 +56,7 @@ public class MyAppController {
         return ApiUtils.getPostsDTO(posts, user);
     }
 
+    //@PostMapping("/upload") works just as well
     @RequestMapping(path = "/posts", method = RequestMethod.POST)
     public ResponseEntity<Object> createPost(Authentication authentication,
                                              RedirectAttributes redirectAttributes,
@@ -100,28 +64,18 @@ public class MyAppController {
                                              @RequestParam("subject")String postSubject,
                                              @RequestParam("body")String postBody,
                                              @RequestParam("price")String postPrice) {
-        String url = "";
-        Cloudinary cloudinary = new Cloudinary("cloudinary://535928336455433:EEgAQDFCI0i-Fe86KvrgsQlBvBI@dq4elvg0g");
-        if (file.isEmpty()){
-            return ApiUtils.getPostCreationResponce(false);
-        }
-        try {
-            File f=Files.createTempFile("temp", file.getOriginalFilename()).toFile();
-            file.transferTo(f);
-            Map response = cloudinary.uploader().upload(f, ObjectUtils.emptyMap());
-            JSONObject json=new JSONObject(response);
-            url = json.getString("url");
 
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
+        String url = ApiUtils.getImageUrl(file);
         boolean canUserPost = ApiUtils.isUserAuthenticated(authentication);
-        if(canUserPost){
+        //making sure the postPrice is only numbers
+        boolean postPriceOnlyNumbers = postPrice.matches("[0-9]+");
+        if(canUserPost && postPriceOnlyNumbers){
             User user = userService.findByUserName(ApiUtils.currentAuthenticatedUserName(authentication));
             postService.save(new Post(user, postSubject, postBody, Integer.valueOf(postPrice), url));
+        } else {
+            return ApiUtils.getPostCreationResponce(postPriceOnlyNumbers);
         }
-        return  ApiUtils.getPostCreationResponce(canUserPost);
+        return ApiUtils.getPostCreationResponce(canUserPost);
     }
 
     //TODO delete user

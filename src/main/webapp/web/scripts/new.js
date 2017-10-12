@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    $('input[type="file"]').imageuploadify();
     $("#btnSubmit").click(sendApiRequest);
 });
 
@@ -22,6 +23,10 @@ function sendApiRequest(event) {
     }
     // disabled the submit button
     $("#btnSubmit").prop("disabled", true);
+
+
+    //TODO keep in mind that the price is an int for now
+    //TODO notify user 10mb max size + alert
 
     $.ajax({
         type: "POST",
@@ -49,3 +54,4 @@ function failureCallBack(e) {
     console.log("ERROR : ", e);
     $("#btnSubmit").prop("disabled", false);
 }
+

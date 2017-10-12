@@ -1,5 +1,7 @@
 package com.myApp.myApp;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONException;
 import org.cloudinary.json.JSONObject;
@@ -9,7 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 // this makes the warnings to bbe ignored by intelliJ
@@ -18,7 +24,27 @@ public class ApiUtils {
     // Private constructor to avoid instantiation of the class
     private ApiUtils() {}
 
-    public static Map<String,Object> jsonToMap (JSONObject json) throws JSONException{
+    public static String getImageUrl (MultipartFile file) {
+        String url = "";
+        Cloudinary cloudinary = new Cloudinary("cloudinary://535928336455433:EEgAQDFCI0i-Fe86KvrgsQlBvBI@dq4elvg0g");
+        if (file.isEmpty()){
+            return url;
+        }
+        try {
+            File f= Files.createTempFile("temp", file.getOriginalFilename()).toFile();
+            file.transferTo(f);
+            Map response = cloudinary.uploader().upload(f, ObjectUtils.emptyMap());
+            JSONObject json=new JSONObject(response);
+            return json.getString("url");
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    //can use later
+    /*public static Map<String,Object> jsonToMap (JSONObject json) throws JSONException{
         Map<String, Object> retMap = new HashMap<String, Object>();
         if(json != JSONObject.NULL) {
             retMap = toMap(json);
@@ -60,11 +86,16 @@ public class ApiUtils {
             list.add(value);
         }
         return list;
-    }
-
+    }*/
 
     public static Map<String, Object> getPostsDTO(List<Post> posts, String authedUser) {
         Map<String, Object> dto = new HashMap<>();
+        dto.put("posts", getAllPostsDto(posts));
+        dto.put("logged_in_user_id", authedUser);
+        return dto;
+    }
+
+    public static List<Object> getAllPostsDto(List<Post> posts) {
         List<Object> postsValue = new ArrayList<>();
         for (Post post : posts) {
             Map<String, Object> newPost = new HashMap<>();
@@ -75,9 +106,7 @@ public class ApiUtils {
             newPost.put("post_price", post.getPostPrice());
             postsValue.add(newPost);
         }
-        dto.put("posts", postsValue);
-        dto.put("logged_in_user_id", authedUser);
-        return dto;
+        return postsValue;
     }
 
     public static Map<String,Object> getSinglePostDTO (Post post, String authedUser, Long postId){
@@ -184,23 +213,11 @@ public class ApiUtils {
         return dto;
     }
 
-    public static Map<String,Object> getUserDashBoardPosts(Set<Post> posts) {
+    public static Map<String,Object> getUserDashBoardPosts(List<Post> posts) {
         Map<String, Object> dashboardPosts = new HashMap<>();
-        List<Object> postsValue = new ArrayList<>();
-        for (Post post : posts) {
-            Map<String, Object> newPost = new HashMap<>();
-            newPost.put("post_id", post.getId());
-            newPost.put("post_creation_date", post.getPostCreationDate());
-            newPost.put("post_subject", post.getPostSubject());
-            newPost.put("post_body", post.getPostBody());
-            newPost.put("post_price", post.getPostPrice());
-            postsValue.add(newPost);
-        }
-        dashboardPosts.put("posts", postsValue);
+        dashboardPosts.put("posts", getAllPostsDto(posts));
         return dashboardPosts;
     }
-
-
 
     @Contract("true -> !null; false -> !null")
     public static ResponseEntity<Object> getUserViewDashboard(boolean canView,
