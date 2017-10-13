@@ -116,7 +116,7 @@ public class ApiUtils {
             dto.put("post_subject", post.getPostSubject());
             dto.put("post_body", post.getPostBody());
             dto.put("post_price", post.getPostPrice());
-            dto.put("url", post.getPostPicUrl());
+            dto.put("urls", post.getPostPicUrl());
         }
         return dto;
     }

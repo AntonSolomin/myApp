@@ -29,6 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 @SpringBootApplication
 public class MyAppApplication extends SpringBootServletInitializer {
@@ -54,9 +55,9 @@ public class MyAppApplication extends SpringBootServletInitializer {
 			userService.save(user1);
 			userService.save(user2);
 
-			Post post1 = new Post(user2, "Cthulhu cheese Potato", "Ask yourself: 'who doesn't need a Cthulhu?'.Get one for yourself!", 2000, "");
-			Post post2 = new Post(user1, "Beer Potato", "I made this really cool beer. Check it out!", 5, "");
-			Post post3 = new Post(user1, "Cakes Cheese", "Delicious tasty cakes. Don't miss out on the amazing opportunity!", 20, "");
+			Post post1 = new Post(user2, "Cthulhu cheese Potato", "Ask yourself: 'who doesn't need a Cthulhu?'.Get one for yourself!", 2000, new ArrayList<>());
+			Post post2 = new Post(user1, "Beer Potato", "I made this really cool beer. Check it out!", 5, new ArrayList<>());
+			Post post3 = new Post(user1, "Cakes Cheese", "Delicious tasty cakes. Don't miss out on the amazing opportunity!", 20, new ArrayList<>());
 			postService.save(post1);
 			postService.save(post2);
 			postService.save(post3);

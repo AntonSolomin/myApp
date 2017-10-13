@@ -12,7 +12,10 @@ public class Post {
     private String postBody;
     private int postPrice;
     private Date postCreationDate;
-    String postPicUrl;
+
+    @ElementCollection
+    @Column(name = "urls")
+    List<String> postPicUrl = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
@@ -20,22 +23,22 @@ public class Post {
 
     public Post() {}
 
-    public Post(User inputUser, String subject, String body, int price, String url) {
+    public Post(User inputUser, String subject, String body, int price, List<String> urls) {
         this.postSubject = subject;
         this.postBody = body;
         this.postPrice = price;
         this.user = inputUser;
-        this.postPicUrl = url;
+        this.postPicUrl = urls;
         inputUser.addPost(this);
         postCreationDate = new Date();
     }
 
-    public String getPostPicUrl() {
+    public  List<String> getPostPicUrl() {
         return postPicUrl;
     }
 
-    public void setPostPicUrl(String postPicUrl) {
-        this.postPicUrl = postPicUrl;
+    public void addToPostPicsUrls(String postPicUrl) {
+        this.postPicUrl.add(postPicUrl);
     }
 
     public int getPostPrice() {

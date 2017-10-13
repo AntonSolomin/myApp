@@ -23,6 +23,7 @@ import java.util.*;
 
 import com.cloudinary.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
@@ -49,6 +50,7 @@ public class MyAppController {
     //TODO upload multiple files
     //TODO create pics thumbnails
 
+
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
     public Map<String, Object> getPosts(Authentication authentication) {
         final String user = ApiUtils.currentAuthenticatedUserName(authentication);
@@ -60,18 +62,23 @@ public class MyAppController {
     @RequestMapping(path = "/posts", method = RequestMethod.POST)
     public ResponseEntity<Object> createPost(Authentication authentication,
                                              RedirectAttributes redirectAttributes,
-                                             @RequestParam("file") MultipartFile file,
+                                             @RequestParam("file") List<MultipartFile> files,
                                              @RequestParam("subject")String postSubject,
                                              @RequestParam("body")String postBody,
                                              @RequestParam("price")String postPrice) {
 
-        String url = ApiUtils.getImageUrl(file);
+        List<String> urls = new ArrayList<>();
+        for (MultipartFile multipartFile : files) {
+            String url = ApiUtils.getImageUrl(multipartFile);
+            urls.add(url);
+        }
+
         boolean canUserPost = ApiUtils.isUserAuthenticated(authentication);
         //making sure the postPrice is only numbers
         boolean postPriceOnlyNumbers = postPrice.matches("[0-9]+");
         if(canUserPost && postPriceOnlyNumbers){
             User user = userService.findByUserName(ApiUtils.currentAuthenticatedUserName(authentication));
-            postService.save(new Post(user, postSubject, postBody, Integer.valueOf(postPrice), url));
+            postService.save(new Post(user, postSubject, postBody, Integer.valueOf(postPrice), urls));
         } else {
             return ApiUtils.getPostCreationResponce(postPriceOnlyNumbers);
         }

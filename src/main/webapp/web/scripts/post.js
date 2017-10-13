@@ -17,7 +17,7 @@ $(function () {
 
 function ready(data) {
     renderPost(data);
-    console.log("Here's your post");
+    console.log(data);
 }
 
 function renderPost(data) {
@@ -29,7 +29,9 @@ function renderPost(data) {
         output += "<p>" + "Post body: " + data.post_body + "</p>";
         output += "<p>" + "Post price: " + data.post_price + "</p>";
 
-        output += "<img src=" + data.url + " alt='some text'>";
+        for (var i = 0; i<data.url.length; ++i) {
+            output += "<img src=" + data.url[i] + " alt='some text'>";
+        }
 
     $("#content").html(output);
 }
