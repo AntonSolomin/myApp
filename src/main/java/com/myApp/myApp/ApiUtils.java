@@ -1,6 +1,7 @@
 package com.myApp.myApp;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import org.cloudinary.json.JSONArray;
 import org.cloudinary.json.JSONException;
@@ -24,24 +25,7 @@ public class ApiUtils {
     // Private constructor to avoid instantiation of the class
     private ApiUtils() {}
 
-    public static String getImageUrl (MultipartFile file) {
-        String url = "";
-        Cloudinary cloudinary = new Cloudinary("cloudinary://535928336455433:EEgAQDFCI0i-Fe86KvrgsQlBvBI@dq4elvg0g");
-        if (file.isEmpty()){
-            return url;
-        }
-        try {
-            File f= Files.createTempFile("temp", file.getOriginalFilename()).toFile();
-            file.transferTo(f);
-            Map response = cloudinary.uploader().upload(f, ObjectUtils.emptyMap());
-            JSONObject json=new JSONObject(response);
-            return json.getString("url");
 
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        return url;
-    }
 
     //can use later
     /*public static Map<String,Object> jsonToMap (JSONObject json) throws JSONException{
@@ -116,7 +100,7 @@ public class ApiUtils {
             dto.put("post_subject", post.getPostSubject());
             dto.put("post_body", post.getPostBody());
             dto.put("post_price", post.getPostPrice());
-            dto.put("urls", post.getPostPicUrl());
+            dto.put("url", post.getPostPicUrl());
         }
         return dto;
     }

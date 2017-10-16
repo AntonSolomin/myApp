@@ -28,6 +28,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api")
@@ -67,14 +70,17 @@ public class MyAppController {
                                              @RequestParam("body")String postBody,
                                              @RequestParam("price")String postPrice) {
 
-        List<String> urls = new ArrayList<>();
-        for (MultipartFile multipartFile : files) {
-            String url = ApiUtils.getImageUrl(multipartFile);
-            urls.add(url);
+
+        if (files.size() >= 3) {
+            ApiUtils.getPostCreationResponce(false);
         }
 
+        //check if this works works
+        ImagesReciever imagesReciever = new ImagesReciever(files);
+        List<String> urls = imagesReciever.getUrls();
+
+
         boolean canUserPost = ApiUtils.isUserAuthenticated(authentication);
-        //making sure the postPrice is only numbers
         boolean postPriceOnlyNumbers = postPrice.matches("[0-9]+");
         if(canUserPost && postPriceOnlyNumbers){
             User user = userService.findByUserName(ApiUtils.currentAuthenticatedUserName(authentication));

@@ -45,6 +45,11 @@ function addToFiles () {
 
 
 function sendApiRequest(event) {
+    console.log(files);
+    if(files.length >= 3) {
+        alert("Please upload no more than 2 pictures")
+        return false;
+    }
 
     //stop submit the form, we will post it manually.
     event.preventDefault();
@@ -54,7 +59,7 @@ function sendApiRequest(event) {
 
     // Create an FormData object
     let data = new FormData(form);
-    console.log(files);
+
 
 
     // appending files from the arr to the data(formdata)

@@ -29,9 +29,11 @@ function renderPost(data) {
         output += "<p>" + "Post body: " + data.post_body + "</p>";
         output += "<p>" + "Post price: " + data.post_price + "</p>";
 
+        //TODO use fancybox
         for (var i = 0; i<data.url.length; ++i) {
             output += "<img src=" + data.url[i] + " alt='some text'>";
         }
+
 
     $("#content").html(output);
 }
