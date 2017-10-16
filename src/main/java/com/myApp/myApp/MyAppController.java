@@ -28,7 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.lang.String;
 
 import static java.util.stream.Collectors.toList;
 
@@ -40,6 +40,9 @@ public class MyAppController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    ImagesReciever imagesReciever;
 
     /*//not necessary
     @GetMapping("/upload")
@@ -76,8 +79,7 @@ public class MyAppController {
         }
 
         //check if this works works
-        ImagesReciever imagesReciever = new ImagesReciever(files);
-        List<String> urls = imagesReciever.getUrls();
+        List<String> urls = imagesReciever.uploadImages(files);
 
 
         boolean canUserPost = ApiUtils.isUserAuthenticated(authentication);

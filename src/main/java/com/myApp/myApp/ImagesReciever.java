@@ -4,6 +4,9 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import org.cloudinary.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -19,15 +22,24 @@ import static java.util.stream.Collectors.toList;
  * Created by Anton on 13-Oct-17.
  */
 public class ImagesReciever {
-    public List<String> urls = new ArrayList<>();
 
+    @Value("${com.cloudinary.cloud_name}")
+    String mCloudName;
 
-    public ImagesReciever(List<MultipartFile> files) {
-        urls = files.stream().map(file -> getImageUrl(file)).collect(toList());
+    @Value("${com.cloudinary.api_key}")
+    String mApiKey;
+
+    @Value("${com.cloudinary.api_secret}")
+    String mApiSecret;
+
+    public ImagesReciever() {}
+
+    public List<String> uploadImages (List<MultipartFile> files) {
+        return files.stream().map(file -> getImageUrl(file)).collect(toList());
     }
 
     public String getImageUrl (MultipartFile file) {
-        Cloudinary cloudinary = new Cloudinary("cloudinary://535928336455433:EEgAQDFCI0i-Fe86KvrgsQlBvBI@dq4elvg0g");
+        Cloudinary cloudinary = new Cloudinary("cloudinary://"+mApiKey+":"+mApiSecret+"@"+mCloudName);
         String string = "";
         if (file.isEmpty()){
             return string;
@@ -48,13 +60,5 @@ public class ImagesReciever {
             e.printStackTrace();
         }
         return string;
-    }
-
-    public List<String> getUrls() {
-        return urls;
-    }
-
-    public void setUrls(List<String> urls) {
-        this.urls = urls;
     }
 }

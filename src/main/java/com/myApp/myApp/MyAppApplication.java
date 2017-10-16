@@ -43,8 +43,10 @@ public class MyAppApplication extends SpringBootServletInitializer {
 		SpringApplication.run(MyAppApplication.class, args);
 	}
 
-
-
+	@Bean
+	public ImagesReciever createImageReceiver () {
+		return new ImagesReciever();
+	}
 
 	@Bean
 	public CommandLineRunner initData(UserService userService,
