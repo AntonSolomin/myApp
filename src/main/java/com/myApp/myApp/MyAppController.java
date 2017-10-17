@@ -1,36 +1,15 @@
 package com.myApp.myApp;
 
-
-import com.cloudinary.utils.ObjectUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cloudinary.json.JSONArray;
-import org.cloudinary.json.JSONObject;
-import org.omg.CORBA.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
-
-import com.cloudinary.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.io.File;
 import java.util.Map;
 import java.lang.String;
 
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api")
