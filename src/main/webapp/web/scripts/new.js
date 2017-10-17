@@ -77,8 +77,6 @@ function addToFiles () {
     console.log(files);
 }
 
-
-
 function sendApiRequest(event) {
     console.log(files);
     if(files.length >= 3) {

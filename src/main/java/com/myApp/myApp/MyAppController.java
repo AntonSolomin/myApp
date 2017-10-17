@@ -52,24 +52,28 @@ public class MyAppController {
                                              @RequestParam("body")String postBody,
                                              @RequestParam("price")String postPrice) {
 
-
+        Map<String, Object> response = new HashMap<>();
         if (files.size() >= 3) {
-            ApiUtils.getPostCreationResponce(false);
+            ApiUtils.getPostCreationResponce(response, false);
         }
 
         //check if this works works
         List<String> urls = imagesReciever.uploadImages(files);
 
-
+        //TODO refactor. Move to ApiUtils
         boolean canUserPost = ApiUtils.isUserAuthenticated(authentication);
         boolean postPriceOnlyNumbers = postPrice.matches("[0-9]+");
         if(canUserPost && postPriceOnlyNumbers){
             User user = userService.findByUserName(ApiUtils.currentAuthenticatedUserName(authentication));
-            postService.save(new Post(user, postSubject, postBody, Integer.valueOf(postPrice), urls));
+            Post post = new Post(user, postSubject, postBody, Integer.valueOf(postPrice), urls);
+            postService.save(post);
+            long postId = post.getId();
+            response.put("post_id", postId);
         } else {
-            return ApiUtils.getPostCreationResponce(postPriceOnlyNumbers);
+            return ApiUtils.getPostCreationResponce(response, postPriceOnlyNumbers);
         }
-        return ApiUtils.getPostCreationResponce(canUserPost);
+
+        return ApiUtils.getPostCreationResponce(response, canUserPost);
     }
 
     //TODO delete user

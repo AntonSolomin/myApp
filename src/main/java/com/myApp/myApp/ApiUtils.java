@@ -241,11 +241,13 @@ public class ApiUtils {
     }
 
     @Contract("_, true -> !null; _, false -> !null")
-    public static ResponseEntity<Object> getPostCreationResponce(boolean canUserPost) {
+    public static ResponseEntity<Object> getPostCreationResponce(Map<String, Object> response, boolean canUserPost) {
         if (canUserPost) {
-            return new ResponseEntity<Object>("post_created", HttpStatus.CREATED);
+            response.put("post_creation","post_successfully_created");
+            return new ResponseEntity<Object>(response, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<Object>("post_not_created", HttpStatus.FORBIDDEN);
+            response.put("post_creation","post_not_created");
+            return new ResponseEntity<Object>(response, HttpStatus.FORBIDDEN);
         }
     }
 
