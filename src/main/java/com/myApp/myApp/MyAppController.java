@@ -61,6 +61,7 @@ public class MyAppController {
         List<String> urls = imagesReciever.uploadImages(files);
 
         //TODO refactor. Move to ApiUtils
+        //TODO To consider : don't return just post id, return the actual post
         boolean canUserPost = ApiUtils.isUserAuthenticated(authentication);
         boolean postPriceOnlyNumbers = postPrice.matches("[0-9]+");
         if(canUserPost && postPriceOnlyNumbers){

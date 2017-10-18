@@ -4,43 +4,47 @@
 
 $(function () {
     $("#logIn").click(logIn);
-    $("#getUser").click(seeUser);
+    getUserData();
 });
 
 function logIn () {
     $.post("/api/login", { userName: "bruminator", password: "qwe" }).done(function(data){console.log(data);});
 }
 
-function seeUser() {
+function getUserData() {
     $.getJSON("/api/users/bruminator", renderUser).fail(function () {console.log("failed to get");});
 }
 
 function renderUser(data) {
-    var userName = data.username + " dashboard";
+    let userName = data.username + " dashboard";
     $("#userNameTitle").html(userName);
 
-    var output;
+    let output;
+    let message = " posts.";
     output += "<p>" + data.first_name + "</p>";
     output += "<p>" + data.last_name + "</p>";
     output += "<p>" + data.user_id + "</p>";
     output += "<p>" + data.username + "</p>";
-    output += "<p>" + "Your posts are: " + data.posts + " posts." +"</p>";
-
-    //output += "<p>" + "You have " + data.posts.length + " posts." +"</p>";
-
+    output += "<p>" + "Your posts are: " + renderDashboardPosts(data.posts) +"</p>";
+    if (data.posts.length == 1) {message = " post."};
+    output += "<p>" + "You have " + data.posts.length + message +"</p>";
 
     $("#content").html(output);
     console.log(data);
 }
 
-function editUser () {
-    var url = "/api/users";
-    var data = {inputFirstName: "Blob", inputLastName: "Slob", inputPassword: "567" };
-    sendApiRequest(url, "PATCH", data, successCallback, failureCallback);
+function renderDashboardPosts(posts) {
+    let message = "";
+    for (let post of posts) {
+        message += "<p>" + post.post_subject + " " +post.post_price + "</p>";
+    }
+    return message;
 }
 
+
+
 function sendApiRequest(url, method, data, successCallback, failureCallback) {
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
@@ -49,7 +53,7 @@ function sendApiRequest(url, method, data, successCallback, failureCallback) {
                 failureCallback(this);
             }
         }
-    }
+    };
 
     request.open(method, url, true);
     request.setRequestHeader("Content-type", "application/json");
@@ -69,19 +73,19 @@ function failureCallback () {
 }
 
 function editUser () {
-    var url = "/api/users";
-    var data = {inputFirstName: "Blob", inputLastName: "Slob", inputPassword: "567" };
+    let url = "/api/users";
+    let data = {inputFirstName: "Blob", inputLastName: "Slob", inputPassword: "567" };
     sendApiRequest(url, "PATCH", data, successCallback, failureCallback);
 }
 
 function editPost() {
-    var url = "/api/posts";
-    var data = {id: 1, postBody: "Totally new", postSubject: "the subject is fantastically awesome", postPrice: 1000 };
+    let url = "/api/posts";
+    let data = {id: 1, postBody: "Totally new", postSubject: "the subject is fantastically awesome", postPrice: 1000 };
     sendApiRequest(url, "PATCH", data, successCallback, failureCallback);
 }
 
 function deletePost () {
-    var queryArray = "1";
+    let queryArray = "1";
     sendApiRequest('/api/posts/', "DELETE", queryArray, successCallback, failureCallback);
 }
 

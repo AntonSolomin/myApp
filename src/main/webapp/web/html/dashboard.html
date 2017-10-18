@@ -7,16 +7,31 @@
             src="https://code.jquery.com/jquery-3.2.1.js"
             integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
             crossorigin="anonymous"></script>
+    <link href="/web/styles/dashboard.css" rel="stylesheet">
+
 </head>
 <body>
-    <p>D A S H B O A R D</p>
-    <div id="content"></div>
-    <button id="logIn">Log In</button>
-    <button id="getUser">See User</button>
-    <button onclick="editUser()">Change User</button>
-    <button onclick="editPost()">Change Post</button>
-    <button onclick="deletePost()">Delete Post</button>
-    <button onclick="deleteUser()">Delete User</button>
+    <header>
+
+        <p>D A S H B O A R D</p>
+    </header>
+    <nav>
+        <a href='/web/index.html'>Back to main</a>
+        <button id="logIn">Log In</button>
+        <button id="getUser">See User</button>
+    </nav>
+    <main>
+        <div id="content"></div>
+    </main>
+    <footer>
+        <button onclick="editUser()">Change User</button>
+        <button onclick="editPost()">Change Post</button>
+        <button onclick="deletePost()">Delete Post</button>
+        <button onclick="deleteUser()">Delete User</button>
+    </footer>
+
+
+
 
 <script src="/web/scripts/dashboard.js" type="text/javascript"></script>
 </body>

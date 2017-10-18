@@ -16,12 +16,11 @@ function renderPosts(data) {
     var output = "";
     for (var i =0; i < data.posts.length; ++i) {
         output += "<p>";
-            output += "Post Id: " + data.posts[i].post_id;
             output += "<a " + addIdToLink(data.logged_in_user_id, data.posts[i]) + " >";
-            output += "Post subject: " + data.posts[i].post_subject;
+            output += data.posts[i].post_subject + " ";
             output += "</a>";
-            output += "Post body: " + data.posts[i].post_body;
-            output += "Post price: " + data.posts[i].post_price;
+            output += data.posts[i].post_body + " ";
+            output += data.posts[i].post_price;
         output += "</p>";
     }
     $("#output").html(output);

@@ -10,25 +10,36 @@
 			  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
 			  crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js" integrity="sha256-XDU6Po3hKjdQXJHRrKrWlIF/E6y6BBgV5eiqZSYePpo=" crossorigin="anonymous"></script>
+    <link href="/web/styles/index.css" rel="stylesheet">
 
 </head>
 <body>
+    <header>
+        <span id="userName"></span>
+        <button onclick="logIn()">Log In</button>
+        <button onclick="logOut()">Log Out</button>
+    </header>
+    <nav>
+        <a href='/web/html/dashboard.html'>Dashboard</a>
+        <a href='/web/html/new.html'>New Post!</a>
+        <form id="searchBox">
+            <div class="form-group">
+                <label for="query">Lookig for </label>
+                <input type="text" class="form-control" id="query" required>
+                <button id="submit" type="button">Search</button>
+            </div>
+        </form>
+    </nav>
+    <main>
+        <div id="output"></div>
+    </main>
+    <footer><p>This is my footer</p></footer>
 
 
 
 
-<span id="userName"></span> <a href='/web/html/new.html'>New Post!</a> <a href='/web/html/dashboard.html'>Dashboard</a>
-    <div id="output"></div>
-    <button onclick="logIn()">Log In</button>
-    <button onclick="logOut()">Log Out</button>
 
-    <form id="searchBox">
-        <div class="form-group">
-            <label for="query">Lookig for </label>
-            <input type="text" class="form-control" id="query" required>
-            <button id="submit" type="button">Search</button>
-        </div>
-    </form>
+
 
     <script src="/web/scripts/index.js" type="text/javascript"></script>
 </body>

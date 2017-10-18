@@ -25,8 +25,6 @@ public class ApiUtils {
     // Private constructor to avoid instantiation of the class
     private ApiUtils() {}
 
-
-
     //can use later
     /*public static Map<String,Object> jsonToMap (JSONObject json) throws JSONException{
         Map<String, Object> retMap = new HashMap<String, Object>();
@@ -77,20 +75,6 @@ public class ApiUtils {
         dto.put("posts", getAllPostsDto(posts));
         dto.put("logged_in_user_id", authedUser);
         return dto;
-    }
-
-    public static List<Object> getAllPostsDto(List<Post> posts) {
-        List<Object> postsValue = new ArrayList<>();
-        for (Post post : posts) {
-            Map<String, Object> newPost = new HashMap<>();
-            newPost.put("post_id", post.getId());
-            newPost.put("post_creation_date", post.getPostCreationDate());
-            newPost.put("post_subject", post.getPostSubject());
-            newPost.put("post_body", post.getPostBody());
-            newPost.put("post_price", post.getPostPrice());
-            postsValue.add(newPost);
-        }
-        return postsValue;
     }
 
     public static Map<String,Object> getSinglePostDTO (Post post, String authedUser, Long postId){
@@ -193,14 +177,22 @@ public class ApiUtils {
         dto.put("last_name",user.getLastName());
         dto.put("user_id",user.getUserId());
         dto.put("username",user.getUserName());
-        dto.put("posts", getUserDashBoardPosts(user.getPosts()));
+        dto.put("posts", getAllPostsDto(user.getPosts()));
         return dto;
     }
 
-    public static Map<String,Object> getUserDashBoardPosts(List<Post> posts) {
-        Map<String, Object> dashboardPosts = new HashMap<>();
-        dashboardPosts.put("posts", getAllPostsDto(posts));
-        return dashboardPosts;
+    public static List<Object> getAllPostsDto(List<Post> posts) {
+        List<Object> postsValue = new ArrayList<>();
+        for (Post post : posts) {
+            Map<String, Object> newPost = new HashMap<>();
+            newPost.put("post_id", post.getId());
+            newPost.put("post_creation_date", post.getPostCreationDate());
+            newPost.put("post_subject", post.getPostSubject());
+            newPost.put("post_body", post.getPostBody());
+            newPost.put("post_price", post.getPostPrice());
+            postsValue.add(newPost);
+        }
+        return postsValue;
     }
 
     @Contract("true -> !null; false -> !null")
