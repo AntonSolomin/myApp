@@ -10,8 +10,10 @@ $(function () {
         var id = queryObj.id;
 
         var link = "/api/post_view/" + id;
+        var linkSimilar = "/api/post_view/" + id + "/similar";
         console.log(link);
         $.getJSON(link, ready).fail(function () {console.log("failed to get /api/posts");});
+        $.getJSON(linkSimilar, renderSimilar).fail(function () {console.log("failed to get similar posts");});
     }
 });
 
@@ -21,7 +23,6 @@ function ready(data) {
 }
 
 function renderPost(data) {
-    console.log("Im trying");
     var output = "";
 
         output += "<p>" + "Post Id: " + data.post_id + "</p>";
@@ -36,6 +37,22 @@ function renderPost(data) {
 
 
     $("#content").html(output);
+}
+
+
+function renderSimilar(data) {
+    console.log(data);
+    var output = "";
+    for (let post of data.similar_products) {
+        console.log(post);
+        output += "<p>" + "Similar Post Subject: " + post.similar_post_subject + "</p>";
+        output += "<p>" + "Similar Post Price: " + post.similar_post_price + "</p>";
+        output += "<p>" + "Similar Post Url: " + post.similar_post_url + "</p>";
+        for (let i = 0; i<post.similar_post_url.length; ++i) {
+            output += "<img src=" + post.similar_post_url[i] + " alt='some text'>";
+        }
+    }
+    $("#similar").html(output);
 }
 
 function parseQueryObject() {

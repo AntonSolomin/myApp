@@ -70,6 +70,47 @@ public class ApiUtils {
         return list;
     }*/
 
+    public static Map<String,Object> getSimilarProducts(List<Post> posts, Post originalPost, String authedUser) {
+        String postSubject = originalPost.getPostSubject();
+        long id = originalPost.getId();
+        Map<String,Object> dto = new HashMap<>();
+        if (authedUser == null) {
+            return dto;
+        }
+
+        Set<Post> similarPosts = new HashSet<>();
+        String[] query = postSubject.split("\\s+");
+        for (Post post : posts) {
+            String[] postS = post.getPostSubject().split("\\s+");
+            for (String s : postS) {
+                for (String s1 : query) {
+                    if (s1.toLowerCase().equals(s.toLowerCase())) {
+                        similarPosts.add(post);
+                    }
+                }
+            }
+        }
+
+        //TODO exlude viewed product from the list
+
+        dto.put("similar_products", getSimilarProductsDto(similarPosts, id));
+        return dto;
+    }
+
+    public static List<Object> getSimilarProductsDto (Set<Post> posts, Long id) {
+        List<Object> dto = new ArrayList<>();
+        for (Post post : posts) {
+            if (!id.equals(post.getId())) {
+                Map<String, Object> singleProduct = new HashMap<>();
+                singleProduct.put("similar_post_subject", post.getPostSubject());
+                singleProduct.put("similar_post_price", post.getPostPrice());
+                singleProduct.put("similar_post_url", post.getPostPicUrl());
+                dto.add(singleProduct);
+            }
+        }
+        return dto;
+    }
+
     public static Map<String, Object> getPostsDTO(List<Post> posts, String authedUser) {
         Map<String, Object> dto = new HashMap<>();
         dto.put("posts", getAllPostsDto(posts));
@@ -247,6 +288,15 @@ public class ApiUtils {
     public static ResponseEntity<Object> getPostJoinResponse (boolean isJoined,
                                                               Map<String,Object> dto) {
         if (isJoined) {
+            return new ResponseEntity<Object>(dto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Object>(dto, HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Contract("true, _ -> !null; false, _ -> !null")
+    public static ResponseEntity<Object> getSimilarProductsResponse (boolean isOk, Map<String, Object> dto) {
+        if (isOk) {
             return new ResponseEntity<Object>(dto, HttpStatus.OK);
         } else {
             return new ResponseEntity<Object>(dto, HttpStatus.FORBIDDEN);

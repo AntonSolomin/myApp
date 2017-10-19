@@ -114,6 +114,19 @@ public class MyAppController {
         return ApiUtils.getPostJoinResponse(isJoined, dto);
     }
 
+    @RequestMapping(path = "/post_view/{postId}/similar", method = RequestMethod.GET)
+    public ResponseEntity<Object> getSimilarProducts(@PathVariable Long postId,
+                                                     Authentication authentication) {
+        final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
+        Post post = postService.findOne(postId);
+        boolean isAvailable = false;
+        List<Post> posts = postService.findAll();
+        final Map<String,Object> dto = ApiUtils.getSimilarProducts(posts, post, userName);
+        if (dto.size() != 0) isAvailable = true;
+        return ApiUtils.getSimilarProductsResponse(isAvailable, dto);
+    }
+
+
     @RequestMapping(path = "/posts/queries", method = RequestMethod.POST)
     public Map<String, Object> searchPosts(Authentication authentication,
                                            @RequestBody List<String> query) {
