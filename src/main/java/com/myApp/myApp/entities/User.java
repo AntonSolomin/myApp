@@ -1,10 +1,8 @@
-package com.myApp.myApp;
+package com.myApp.myApp.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class User {
@@ -19,6 +17,9 @@ public class User {
     @OneToMany(mappedBy="user", fetch=FetchType.EAGER)
     private List<Post> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Post> likedPosts = new ArrayList<>();
+
     public User(){}
 
     public User(String inputfirstName, String inputLastname, String inputUserName, String inputpassword) {
@@ -26,6 +27,18 @@ public class User {
         this.lastName = inputLastname;
         this.userName = inputUserName;
         this.password = inputpassword;
+    }
+
+    public List<Post> getLikedPosts() {
+        return likedPosts;
+    }
+
+    public void setLikedPosts(List<Post> likedPosts) {
+        this.likedPosts = likedPosts;
+    }
+
+    public void addToLikedPosts(Post post) {
+        this.likedPosts.add(post);
     }
 
     public void addPost(Post post) {

@@ -1,23 +1,17 @@
-package com.myApp.myApp;
+package com.myApp.myApp.utilities;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.Transformation;
-import com.cloudinary.utils.ObjectUtils;
-import org.cloudinary.json.JSONArray;
-import org.cloudinary.json.JSONException;
-import org.cloudinary.json.JSONObject;
+import com.myApp.myApp.entities.Post;
+import com.myApp.myApp.entities.User;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // this makes the warnings to bbe ignored by intelliJ
 @SuppressWarnings("WeakerAccess")
@@ -70,8 +64,18 @@ public class ApiUtils {
         return list;
     }*/
 
-    public static Map<String,Object> getSimilarProducts(List<Post> posts, Post originalPost, String authedUser) {
-        String postSubject = originalPost.getPostSubject();
+    @Contract("null, _ -> !null; !null, null -> !null")
+    public static ResponseEntity<Object> getUpVoteResponce (User user, Post post) {
+        if (user !=null && post != null) {
+            post.incrementUpvotes();
+            user.addToLikedPosts(post);
+            return new ResponseEntity<Object>(HttpStatus.OK);
+        }
+        return new ResponseEntity<Object>(HttpStatus.FORBIDDEN);
+    }
+
+    public static Map<String,Object> getSimilarProducts(List<Post> allPosts, Post originalPost, String authedUser) {
+        String originalPostSubject = originalPost.getPostSubject();
         long id = originalPost.getId();
         Map<String,Object> dto = new HashMap<>();
         if (authedUser == null) {
@@ -79,22 +83,30 @@ public class ApiUtils {
         }
 
         Set<Post> similarPosts = new HashSet<>();
-        String[] query = postSubject.split("\\s+");
-        for (Post post : posts) {
-            String[] postS = post.getPostSubject().split("\\s+");
-            for (String s : postS) {
-                for (String s1 : query) {
-                    if (s1.toLowerCase().equals(s.toLowerCase())) {
+        String[] query = originalPostSubject.split("\\s+");
+        for (Post post : allPosts) {
+            String[] postSubject = post.getPostSubject().split("\\s+");
+            for (String word : postSubject) {
+                for (String wordQuery : query) {
+                    if (wordQuery.toLowerCase().equals(word.toLowerCase()) && !isServiceWord(wordQuery)) {
                         similarPosts.add(post);
                     }
                 }
             }
         }
-
-        //TODO exlude viewed product from the list
-
         dto.put("similar_products", getSimilarProductsDto(similarPosts, id));
         return dto;
+    }
+
+    public static boolean isServiceWord (String wordQuery) {
+        //java 8 way to initialize values by construction
+        Set<String> exclusionWords = Stream.of("a","an","and","the").collect(Collectors.toSet());
+        long count = exclusionWords.stream().filter(exclusionWord -> ApiUtils.isMatch(exclusionWord, wordQuery)).count();
+        return count != 0;
+    }
+
+    public static boolean isMatch (String exclusionWord, String wordQuery) {
+        return exclusionWord.toLowerCase().equals(wordQuery.toLowerCase());
     }
 
     public static List<Object> getSimilarProductsDto (Set<Post> posts, Long id) {
@@ -125,6 +137,7 @@ public class ApiUtils {
             dto.put("post_subject", post.getPostSubject());
             dto.put("post_body", post.getPostBody());
             dto.put("post_price", post.getPostPrice());
+            dto.put("upvotes", post.getUpvotes());
             dto.put("url", post.getPostPicUrl());
         }
         return dto;
@@ -219,6 +232,7 @@ public class ApiUtils {
         dto.put("user_id",user.getUserId());
         dto.put("username",user.getUserName());
         dto.put("posts", getAllPostsDto(user.getPosts()));
+        dto.put("posts you liked", getAllPostsDto(user.getLikedPosts()));
         return dto;
     }
 
@@ -231,14 +245,15 @@ public class ApiUtils {
             newPost.put("post_subject", post.getPostSubject());
             newPost.put("post_body", post.getPostBody());
             newPost.put("post_price", post.getPostPrice());
+            newPost.put("upvotes", post.getUpvotes());
             postsValue.add(newPost);
         }
         return postsValue;
     }
 
     @Contract("true -> !null; false -> !null")
-    public static ResponseEntity<Object> getUserViewDashboard(boolean canView,
-                                                              Map<String,Object> dto) {
+    public static ResponseEntity<Object> getUserViewDashboardResponse(boolean canView,
+                                                                      Map<String,Object> dto) {
         if (canView) {
             return new ResponseEntity<Object>(dto, HttpStatus.OK);
         } else {

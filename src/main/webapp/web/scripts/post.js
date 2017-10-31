@@ -18,9 +18,10 @@ $(function () {
 });
 
 function ready(data) {
-    renderPost(data);
     console.log(data);
+    renderPost(data);
 }
+
 
 function renderPost(data) {
     var output = "";
@@ -29,6 +30,7 @@ function renderPost(data) {
         output += "<p>" + "Post subject: " + data.post_subject + "</p>";
         output += "<p>" + "Post body: " + data.post_body + "</p>";
         output += "<p>" + "Post price: " + data.post_price + "</p>";
+        output += "<p>" + "Likes: " + data.upvotes + "</p>";
 
         //TODO use fancybox
         for (var i = 0; i<data.url.length; ++i) {
@@ -68,10 +70,6 @@ function parseQueryObject() {
     }
     return obj;
 }
-
-var test = a0bb;
-
-console.log(solution(test));
 
 function solution(S) {
     S.typeO

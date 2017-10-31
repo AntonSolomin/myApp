@@ -1,4 +1,4 @@
-package com.myApp.myApp;
+package com.myApp.myApp.entities;
 
 import javax.persistence.*;
 import java.util.*;
@@ -12,6 +12,7 @@ public class Post {
     private String postBody;
     private int postPrice;
     private Date postCreationDate;
+    private int upvotes = 0;
 
     @ElementCollection
     @Column(name = "urls")
@@ -31,6 +32,22 @@ public class Post {
         this.postPicUrl = urls;
         inputUser.addPost(this);
         postCreationDate = new Date();
+    }
+
+    public int getUpvotes() {
+        return upvotes;
+    }
+
+    public void setUpvotes(int upvotes) {
+        this.upvotes = upvotes;
+    }
+
+    public void incrementUpvotes () {
+        this.upvotes ++;
+    }
+
+    public void decrementUpvotes () {
+        this.upvotes --;
     }
 
     public  List<String> getPostPicUrl() {

@@ -1,5 +1,7 @@
-package com.myApp.myApp;
+package com.myApp.myApp.service;
 
+import com.myApp.myApp.entities.User;
+import com.myApp.myApp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class UserServiceImplementation implements UserService{
+public class UserServiceImplementation implements UserService {
     @Autowired
     UserRepository userRepository;
 

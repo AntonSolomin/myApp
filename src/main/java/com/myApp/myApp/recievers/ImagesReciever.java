@@ -1,4 +1,4 @@
-package com.myApp.myApp;
+package com.myApp.myApp.recievers;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;

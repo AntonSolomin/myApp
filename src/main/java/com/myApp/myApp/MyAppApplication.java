@@ -1,5 +1,11 @@
 package com.myApp.myApp;
 
+import com.myApp.myApp.recievers.ImagesReciever;
+import com.myApp.myApp.entities.Post;
+import com.myApp.myApp.entities.User;
+import com.myApp.myApp.repositories.UserRepository;
+import com.myApp.myApp.service.PostService;
+import com.myApp.myApp.service.UserService;
 import javafx.application.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,7 +15,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,8 +26,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -73,7 +76,7 @@ public class MyAppApplication extends SpringBootServletInitializer {
 @Configuration class MvcConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/").setViewName("web/games.html");
+		registry.addViewController("/").setViewName("web/index.html");
 	}
 }
 
@@ -113,6 +116,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.authorizeRequests()
+				.antMatchers("/").permitAll()
 				.antMatchers("/web/index.html").permitAll()
 				.antMatchers("/web/html/post.html").permitAll()
 				.antMatchers("/web/html/dashboard.html").permitAll()

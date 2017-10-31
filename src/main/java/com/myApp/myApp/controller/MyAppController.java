@@ -1,5 +1,12 @@
-package com.myApp.myApp;
+package com.myApp.myApp.controller;
 
+import com.myApp.myApp.utilities.ApiUtils;
+import com.myApp.myApp.recievers.EditPostReceiver;
+import com.myApp.myApp.recievers.ImagesReciever;
+import com.myApp.myApp.entities.Post;
+import com.myApp.myApp.entities.User;
+import com.myApp.myApp.service.PostService;
+import com.myApp.myApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,8 +43,10 @@ public class MyAppController {
     //TODO create pics thumbnails
 
 
+
+
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
-    public Map<String, Object> getPosts(Authentication authentication) {
+    public Map<String, Object> getAllPosts(Authentication authentication) {
         final String user = ApiUtils.currentAuthenticatedUserName(authentication);
         List<Post> posts = postService.findAll();
         return ApiUtils.getPostsDTO(posts, user);
@@ -57,7 +66,6 @@ public class MyAppController {
             ApiUtils.getPostCreationResponce(response, false);
         }
 
-        //check if this works works
         List<String> urls = imagesReciever.uploadImages(files);
 
         //TODO refactor. Move to ApiUtils
@@ -73,11 +81,9 @@ public class MyAppController {
         } else {
             return ApiUtils.getPostCreationResponce(response, postPriceOnlyNumbers);
         }
-
         return ApiUtils.getPostCreationResponce(response, canUserPost);
     }
 
-    //TODO delete user
     @RequestMapping(path = "/posts", method = RequestMethod.DELETE)
     public ResponseEntity<Object> deletePost(@RequestBody Long postId,
                                              Authentication authentication) {
@@ -126,6 +132,15 @@ public class MyAppController {
         return ApiUtils.getSimilarProductsResponse(isAvailable, dto);
     }
 
+    @PostMapping("/post/{postId}/upvote")
+    public ResponseEntity<Object> upVote (Authentication authentication,
+                                          @PathVariable Long postId) {
+        //TODO save upvoted posts for the user
+        final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
+        User user = userService.findByUserName(userName);
+        Post post = postService.findOne(postId);
+        return ApiUtils.getUpVoteResponce(user, post);
+    }
 
     @RequestMapping(path = "/posts/queries", method = RequestMethod.POST)
     public Map<String, Object> searchPosts(Authentication authentication,
@@ -189,9 +204,9 @@ public class MyAppController {
             User user = userService.findByUserName(queryUserName);
             canViewDashboard = true;
             Map<String, Object> dto = ApiUtils.getUserDashboardDto(user);
-            return ApiUtils.getUserViewDashboard(canViewDashboard, dto);
+            return ApiUtils.getUserViewDashboardResponse(canViewDashboard, dto);
         } else {
-            return ApiUtils.getUserViewDashboard(canViewDashboard, new HashMap <String,Object>());
+            return ApiUtils.getUserViewDashboardResponse(canViewDashboard, new HashMap <String,Object>());
         }
     }
 }

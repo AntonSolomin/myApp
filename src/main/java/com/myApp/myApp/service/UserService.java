@@ -1,4 +1,6 @@
-package com.myApp.myApp;
+package com.myApp.myApp.service;
+
+import com.myApp.myApp.entities.User;
 
 import java.util.List;
 import java.util.Map;

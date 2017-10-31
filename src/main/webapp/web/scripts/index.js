@@ -1,6 +1,8 @@
 $(function () {
     todo();
+
     $("#submit").click(search);
+    $("#btn").click(upvotePost());
     $("#query").keydown(function (event) {
         if (event.keyCode == 13) {
             $("#submit").click();
@@ -83,6 +85,10 @@ function sendApiRequest(url, method, data, successCallback, failureCallback) {
     } else {
         request.send();
     }
+}
+
+function upvotePost () {
+    sendApiRequest("http://localhost:8080/post/3/upvote", "POST")
 }
 
 function successCallback (data) {

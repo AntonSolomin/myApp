@@ -1,5 +1,8 @@
-package com.myApp.myApp;
+package com.myApp.myApp.service;
 
+import com.myApp.myApp.recievers.EditPostReceiver;
+import com.myApp.myApp.entities.Post;
+import com.myApp.myApp.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
