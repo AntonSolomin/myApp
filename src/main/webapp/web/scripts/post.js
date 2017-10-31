@@ -39,12 +39,10 @@ function renderPost(data) {
     $("#content").html(output);
 }
 
-
 function renderSimilar(data) {
     console.log(data);
     var output = "";
     for (let post of data.similar_products) {
-        console.log(post);
         output += "<p>" + "Similar Post Subject: " + post.similar_post_subject + "</p>";
         output += "<p>" + "Similar Post Price: " + post.similar_post_price + "</p>";
         output += "<p>" + "Similar Post Url: " + post.similar_post_url + "</p>";
@@ -70,3 +68,33 @@ function parseQueryObject() {
     }
     return obj;
 }
+
+var test = a0bb;
+
+console.log(solution(test));
+
+function solution(S) {
+    S.typeO
+    // write your code in JavaScript (Node.js 6.4.0)
+    let list = S.split('');
+    console.log(list)
+    let validString;
+    let uppercase = false;
+    let result;
+    for (let i = 0; i< list.length(); ++i) {
+        if (!isNaN(list[i])) {
+            validString.add(list[i]);
+        }
+        if (list[i] == list[i].toUpperCase()) {
+            uppercase = true
+        }
+    }
+    if (uppercase && validString.length() != 0) {
+        result = validString.length();
+    }
+    if (validString.length() == 0 ) {
+        result = -1;
+    }
+    return result;
+}
+
