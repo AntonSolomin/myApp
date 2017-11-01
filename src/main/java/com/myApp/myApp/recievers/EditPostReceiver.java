@@ -1,7 +1,5 @@
 package com.myApp.myApp.recievers;
 
-import java.util.Map;
-
 /**
  * Created by Anton on 28.09.2017.
  */

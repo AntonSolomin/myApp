@@ -17,6 +17,9 @@ public class User {
     @OneToMany(mappedBy="user", fetch=FetchType.EAGER)
     private List<Post> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy="user", fetch=FetchType.EAGER)
+    private List<PostReview> postReviews = new ArrayList<>();
+
     @ElementCollection
     @Column(name = "likedPosts")
     private List<Long> likedPosts = new ArrayList<>();
@@ -28,6 +31,14 @@ public class User {
         this.lastName = inputLastname;
         this.userName = inputUserName;
         this.password = inputpassword;
+    }
+
+    public void addReview(PostReview postReview) {
+        this.postReviews.add(postReview);
+    }
+
+    public List<PostReview> getPostReviews() {
+        return postReviews;
     }
 
     public List<Long> getLikedPosts() {

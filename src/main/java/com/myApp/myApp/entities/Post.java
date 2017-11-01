@@ -22,6 +22,9 @@ public class Post {
     @JoinColumn(name="user_id")
     private User user;
 
+    @OneToMany(mappedBy="post", fetch=FetchType.EAGER)
+    private List<PostReview> postReviews = new ArrayList<>();
+
     public Post() {}
 
     public Post(User inputUser, String subject, String body, int price, List<String> urls) {
@@ -33,6 +36,22 @@ public class Post {
         this.upvotes = 0;
         inputUser.addPost(this);
         postCreationDate = new Date();
+    }
+
+    public void addReview (PostReview postReview) {
+        this.postReviews.add(postReview);
+    }
+
+    public void setPostPicUrl(List<String> postPicUrl) {
+        this.postPicUrl = postPicUrl;
+    }
+
+    public List<PostReview> getPostReviews() {
+        return postReviews;
+    }
+
+    public void setPostReviews(List<PostReview> postReviews) {
+        this.postReviews = postReviews;
     }
 
     public int getUpvotes() {

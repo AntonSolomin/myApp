@@ -231,6 +231,7 @@ public class ApiUtils {
         dto.put("username",user.getUserName());
         dto.put("posts", getAllPostsDto(user.getPosts()));
         dto.put("posts_you_liked", user.getLikedPosts());
+        dto.put("reviews", user.getPostReviews().size());
         return dto;
     }
 

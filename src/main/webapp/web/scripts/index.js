@@ -4,6 +4,8 @@ $(function () {
     $("#submit").click(search);
     $("#btn").click(upvotePost);
     $("#btnUnlike").click(unUpVotePost);
+    $("#review").click(review);
+    $("#getreviews").click(getreviews);
     $("#query").keydown(function (event) {
         if (event.keyCode == 13) {
             $("#submit").click();
@@ -101,6 +103,22 @@ function upvotePost () {
         type: 'PUT',
         data: {"vote": true}
     });
+}
+
+function review() {
+    /*$.ajax({
+        url: '/api/posts/2/reviews',
+        type: 'POST',
+        data: {body: "ehhehehehehe", subject: "muhhahaha", evaluation: 9}
+    });*/
+
+    $.post('/api/posts/2/reviews', {body: "ehhehehehehe", subject: "muhhahaha", evaluation: "9"});
+
+
+}
+
+function getreviews() {
+    $.getJSON("/api/postReviews", function (data){console.log(data);});
 }
 
 function unUpVotePost () {

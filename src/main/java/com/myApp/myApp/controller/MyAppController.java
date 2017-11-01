@@ -1,5 +1,8 @@
 package com.myApp.myApp.controller;
 
+import com.myApp.myApp.entities.PostReview;
+import com.myApp.myApp.recievers.PostReviewReciever;
+import com.myApp.myApp.service.PostReviewService;
 import com.myApp.myApp.utilities.ApiUtils;
 import com.myApp.myApp.recievers.EditPostReceiver;
 import com.myApp.myApp.recievers.ImagesReciever;
@@ -8,6 +11,8 @@ import com.myApp.myApp.entities.User;
 import com.myApp.myApp.service.PostService;
 import com.myApp.myApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +31,9 @@ public class MyAppController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    PostReviewService postReviewService;
 
     @Autowired
     ImagesReciever imagesReciever;
@@ -166,6 +174,29 @@ public class MyAppController {
 
         userService.save(user);
         return ApiUtils.getUpVoteResponce(user);
+    }
+
+    @RequestMapping(path = "/posts/{postId}/reviews", method = RequestMethod.POST)
+    public ResponseEntity<Object> newReview (@PathVariable Long postId,
+                                             PostReviewReciever postReviewReciever,
+                                             Authentication authentication) {
+
+        final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
+        User user = userService.findByUserName(userName);
+        Post post = postService.findOne(postId);
+        PostReview postReview = new PostReview(user,post);
+        postReviewService.save(postReview);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @RequestMapping(path = "/postReviews", method = RequestMethod.GET)
+    public List<Date> getAllReviews () {
+        List<PostReview> reviews = postReviewService.findAll();
+        List<Date> dates = new ArrayList<>();
+        for (PostReview review : reviews) {
+            dates.add(review.getTimestamp());
+        }
+        return dates;
     }
 
     @RequestMapping(path = "/posts/queries", method = RequestMethod.POST)
