@@ -132,14 +132,40 @@ public class MyAppController {
         return ApiUtils.getSimilarProductsResponse(isAvailable, dto);
     }
 
-    @PostMapping("/post/{postId}/upvote")
-    public ResponseEntity<Object> upVote (Authentication authentication,
-                                          @PathVariable Long postId) {
-        //TODO save upvoted posts for the user
+    //todo change to PUT and VOTES (up and down)
+    @RequestMapping(path = "/posts/{postId}/vote", method = RequestMethod.PUT)
+    public ResponseEntity<Object> votePost (@PathVariable Long postId,
+                                          @RequestParam("vote") boolean vote,
+                                          Authentication authentication) {
+
         final String userName = ApiUtils.currentAuthenticatedUserName(authentication);
         User user = userService.findByUserName(userName);
         Post post = postService.findOne(postId);
-        return ApiUtils.getUpVoteResponce(user, post);
+
+        //todo refactor
+        List<Long> liked = user.getLikedPosts();
+        // first like ever
+        if (liked.size() == 0 && vote) {
+            user.addToLikedPosts(postId);
+            postService.votePost(post, vote);
+        }
+
+        for (int i = 0; i < liked.size(); i++) {
+            Long aLong = liked.get(i);
+            //first and like. I cant like the same post twice
+            if (!aLong.equals(postId) && vote) {
+                user.addToLikedPosts(postId);
+                postService.votePost(post, vote);
+            }
+            //User has it and unlike. Clearing the liked list if it's !vote
+            if (aLong.equals(postId) && !vote) {
+                user.deleteFromLikedPosts(aLong);
+                postService.votePost(post, vote);
+            }
+        }
+
+        userService.save(user);
+        return ApiUtils.getUpVoteResponce(user);
     }
 
     @RequestMapping(path = "/posts/queries", method = RequestMethod.POST)

@@ -17,8 +17,9 @@ public class User {
     @OneToMany(mappedBy="user", fetch=FetchType.EAGER)
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<Post> likedPosts = new ArrayList<>();
+    @ElementCollection
+    @Column(name = "likedPosts")
+    private List<Long> likedPosts = new ArrayList<>();
 
     public User(){}
 
@@ -29,16 +30,20 @@ public class User {
         this.password = inputpassword;
     }
 
-    public List<Post> getLikedPosts() {
+    public List<Long> getLikedPosts() {
         return likedPosts;
     }
 
-    public void setLikedPosts(List<Post> likedPosts) {
+    public void setLikedPosts(List<Long> likedPosts) {
         this.likedPosts = likedPosts;
     }
 
-    public void addToLikedPosts(Post post) {
-        this.likedPosts.add(post);
+    public void addToLikedPosts(Long postId) {
+        this.likedPosts.add(postId);
+    }
+
+    public void deleteFromLikedPosts (Long postId) {
+        this.likedPosts.remove(postId);
     }
 
     public void addPost(Post post) {

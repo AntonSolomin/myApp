@@ -12,7 +12,7 @@ public class Post {
     private String postBody;
     private int postPrice;
     private Date postCreationDate;
-    private int upvotes = 0;
+    private int upvotes;
 
     @ElementCollection
     @Column(name = "urls")
@@ -30,6 +30,7 @@ public class Post {
         this.postPrice = price;
         this.user = inputUser;
         this.postPicUrl = urls;
+        this.upvotes = 0;
         inputUser.addPost(this);
         postCreationDate = new Date();
     }

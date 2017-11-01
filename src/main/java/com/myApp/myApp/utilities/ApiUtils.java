@@ -65,10 +65,8 @@ public class ApiUtils {
     }*/
 
     @Contract("null, _ -> !null; !null, null -> !null")
-    public static ResponseEntity<Object> getUpVoteResponce (User user, Post post) {
-        if (user !=null && post != null) {
-            post.incrementUpvotes();
-            user.addToLikedPosts(post);
+    public static ResponseEntity<Object> getUpVoteResponce (User user) {
+        if (user != null) {
             return new ResponseEntity<Object>(HttpStatus.OK);
         }
         return new ResponseEntity<Object>(HttpStatus.FORBIDDEN);
@@ -232,7 +230,7 @@ public class ApiUtils {
         dto.put("user_id",user.getUserId());
         dto.put("username",user.getUserName());
         dto.put("posts", getAllPostsDto(user.getPosts()));
-        dto.put("posts you liked", getAllPostsDto(user.getLikedPosts()));
+        dto.put("posts_you_liked", user.getLikedPosts());
         return dto;
     }
 

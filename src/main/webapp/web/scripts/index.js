@@ -2,7 +2,8 @@ $(function () {
     todo();
 
     $("#submit").click(search);
-    $("#btn").click(upvotePost());
+    $("#btn").click(upvotePost);
+    $("#btnUnlike").click(unUpVotePost);
     $("#query").keydown(function (event) {
         if (event.keyCode == 13) {
             $("#submit").click();
@@ -23,6 +24,7 @@ function renderPosts(data) {
             output += "</a>";
             output += data.posts[i].post_body + " ";
             output += data.posts[i].post_price;
+            output += " Upvotes: " + data.posts[i].upvotes;
         output += "</p>";
     }
     $("#output").html(output);
@@ -88,7 +90,29 @@ function sendApiRequest(url, method, data, successCallback, failureCallback) {
 }
 
 function upvotePost () {
-    sendApiRequest("http://localhost:8080/post/3/upvote", "POST")
+    //sendApiRequest("http://localhost:8080/post/3/upvote", "POST");
+    /*$.ajax({
+        type: "POST",
+        url: "/api/posts/2/upvote",
+        success: success,
+    });*/
+    $.ajax({
+        url: '/api/posts/2/vote',
+        type: 'PUT',
+        data: {"vote": true}
+    });
+}
+
+function unUpVotePost () {
+    $.ajax({
+        url: '/api/posts/2/vote',
+        type: 'PUT',
+        data: {"vote": false}
+    });
+}
+
+function success() {
+    console.log("Hello!");
 }
 
 function successCallback (data) {

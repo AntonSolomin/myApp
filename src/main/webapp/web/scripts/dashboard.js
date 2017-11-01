@@ -26,8 +26,11 @@ function renderUser(data) {
     output += "<p>" + data.user_id + "</p>";
     output += "<p>" + data.username + "</p>";
     output += "<p>" + "Your posts are: " + renderDashboardPosts(data.posts) +"</p>";
-    if (data.posts.length == 1) {message = " post."};
+    if (data.posts.length == 1) {
+        message = " post."
+    };
     output += "<p>" + "You have " + data.posts.length + message +"</p>";
+    output += "<p>" + "You liked " + data.posts_you_liked.length + message +"</p>";
 
     $("#content").html(output);
     console.log(data);

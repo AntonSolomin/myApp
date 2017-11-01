@@ -11,5 +11,6 @@ public interface PostService {
     Post findOne(long id);
     List<Post> findAll();
     boolean editPost(EditPostReceiver inputEditData);
+    void votePost(Post post, boolean vote);
 
 }

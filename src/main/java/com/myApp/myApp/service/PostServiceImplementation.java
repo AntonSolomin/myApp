@@ -70,4 +70,14 @@ public class PostServiceImplementation implements PostService {
         postRepository.save(postToEdit);
         return isEdited;
     }
+
+    @Override
+    public void votePost(Post post, boolean vote) {
+        if(vote) {
+            post.incrementUpvotes();
+        } else {
+            post.decrementUpvotes();
+        }
+        postRepository.save(post);
+    }
 }
